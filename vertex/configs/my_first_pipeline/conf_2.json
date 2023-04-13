@@ -1,0 +1,6 @@
+{
+  "INPUT_TABLE": "vertex_pipeline_demo.input",
+  "OUTPUT_TABLE": "vertex_pipeline_demo.output",
+  "NEW_COLUMN_NAME": "new_column",
+  "NEW_COLUMN_VALUE": "The configuration 2 value"
+}

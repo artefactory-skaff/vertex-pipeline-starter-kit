@@ -1,0 +1,6 @@
+{
+  "INPUT_TABLE": "vertex.my-table",
+  "OUTPUT_TABLE": "vertex.output",
+  "NEW_COLUMN_NAME": "new_column",
+  "NEW_COLUMN_VALUE": "The configuration 1 value"
+}

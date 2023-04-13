@@ -1,0 +1,4 @@
+-r requirements.txt  # Recursively installs all the packages from requirements.txt
+
+kfp
+google.cloud.aiplatform

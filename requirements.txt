@@ -1,0 +1,9 @@
+# Add all your vertex base image requirements here
+# Packages added here will be available in all your components
+
+google-cloud-bigquery[pandas]>=3.0,<4.0
+google-cloud-logging>=3.0,<4.0
+pandas
+fsspec
+gcsfs
+pandas_gbq

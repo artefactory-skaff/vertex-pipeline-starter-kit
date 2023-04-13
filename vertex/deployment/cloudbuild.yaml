@@ -1,0 +1,20 @@
+# This config file is meant to be used from a local dev machine to submit a vertex base image build to Cloud Build.
+# This generic image will then be used in all the Vertex components of your pipeline.
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - >-
+        docker build
+        -t eu.gcr.io/$PROJECT_ID/vertex-pipelines-base:latest
+        --build-arg PROJECT_ID=$PROJECT_ID
+        -f vertex/deployment/Dockerfile
+        .
+    id: build-base-image
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+images:
+  - eu.gcr.io/$PROJECT_ID/vertex-pipelines-base:latest

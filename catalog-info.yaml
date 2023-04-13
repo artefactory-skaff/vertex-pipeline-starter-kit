@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: vertex-pipeline-starter-kit
+  title: Vertex AI pipelines starter kit.
+  description: >
+    This is a very basic GitHub repo template to learn how to smoothly industrialize Vertex Pipelines. This is not suitable for prod.
+  annotations:
+    github.com/project-slug: artefactory/vertex-pipeline-starter-kit
+#    backstage.io/techdocs-ref: dir:.
+  tags:
+    - vertex
+    - gcp
+spec:
+  type: service
+  owner: user:AlexisVLRT
+  lifecycle: experimental
