@@ -38,8 +38,9 @@ gcloud auth application-default login
 ```
 
 ### 🚧 Create some GCP resources
-- Create a service account
+- Create a service account # TODO: specify permissions
 - Create a GCS bucket for Vertex
+- Enter the correct bucket and SA names in `vertex/pipelines/my_first_pipelie.py`
 - Run `make build_image` to initialize a Vertex base image on your project.
 - Create sample data in BQ
 

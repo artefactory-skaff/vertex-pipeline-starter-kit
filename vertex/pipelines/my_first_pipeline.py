@@ -13,7 +13,7 @@ from vertex.components.save_data import save_data_component
 from vertex.components.transform_data import transform_data_component
 
 
-# This is a template pipeline that performs a simple ETL operation, adding a column to a BQ table with a default value
+# This is a pipeline that performs a simple ETL operation, adding a column to a BQ table with a default value
 @kfp.dsl.pipeline(name="starter-pipeline")
 def pipeline(
     project_id: str,
@@ -55,8 +55,8 @@ if __name__ == '__main__':
     SELECTED_CONFIGURATION = load_config("conf_1")
     PIPELINE_NAME = "my_first_vertex_pipeline"
 
-    BUCKET_NAME = f"gs://vertex-{PROJECT_ID}"
-    SERVICE_ACCOUNT = f"vertex-pipeline@{PROJECT_ID}.iam.gserviceaccount.com"
+    BUCKET_NAME = f"gs://artifact-vertex-template-264a"
+    SERVICE_ACCOUNT = f"vertex@{PROJECT_ID}.iam.gserviceaccount.com"
 
     compiler.Compiler().compile(pipeline_func=pipeline, package_path="./pipeline.json")
     aip.init(project=PROJECT_ID, staging_bucket=BUCKET_NAME)

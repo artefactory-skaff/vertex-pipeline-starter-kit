@@ -1,0 +1,11 @@
+# This is only used for documentation generation in Roadie. It is not part of the vertex started kit.
+
+site_name: Vertex pipelines starter kit
+repo_name: artefactory/vertex-pipeline-starter-kit
+repo_url: https://github.com/artefactory/vertex-pipeline-starter-kit
+
+plugins:
+  - techdocs-core
+
+nav:
+  - "How to split a pipeline in components": splitting_component.md

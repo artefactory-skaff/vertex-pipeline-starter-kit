@@ -1,0 +1,4 @@
+- Don't make micro-components. 
+- A component should be a self-contained unit with minimal input-outputs
+- If you find yourself making changes on 4+ components to add a feature, you should probably merge some of them.
+- If you find yourself waiting on a lot of unrelated code to run before the execution reached your changes, you should probably split this component.
