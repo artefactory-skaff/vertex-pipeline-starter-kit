@@ -8,6 +8,8 @@ It also touches on patterns that we have seen not work well or had worse velocit
 # Vertex pipelines
 ## Convictions
 
+Over the last few years of using vertex pipelines, ml engineers at Artefact have 
+
 ## Other things
 - Use a single base docker image for all components
 - Use function-based components
@@ -17,9 +19,12 @@ It also touches on patterns that we have seen not work well or had worse velocit
 
 ## Phase 1 - Notebook exploration
 
-- Wrap code in functions -> they will be easily transferable to scripts
-- Type hint functions inputs/outputs -> Will help make sure types will be vertex-compatible
-- Build your Notebook in a way that will mirror an ML pipeline: a section for a pipeline step/component
+
+## Phase 2 - Refactor your notebook for it to look like a pipeline
+
+- Wrap code in functions to make them easily transferable to scripts
+- Write your Notebook in a way that will mirror an ML pipeline: a section for a pipeline step/component
+- Type hint functions inputs/outputs as a general good practice and to identify at a glance the vertex-compatible ones
 
 ## Phase 2 - Refactor to a regular python project
 

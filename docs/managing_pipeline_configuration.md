@@ -1,0 +1,1 @@
+dynamic config loading within the pipeline VS explicit config as pipeline parameters

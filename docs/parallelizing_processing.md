@@ -1,0 +1,1 @@
+single component multiprocessing vs parallel components vs multiple pipelines
