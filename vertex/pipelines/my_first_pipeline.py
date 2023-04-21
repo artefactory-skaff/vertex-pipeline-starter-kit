@@ -1,7 +1,4 @@
-import json
 import os
-from pathlib import Path
-from typing import Dict
 
 import kfp
 from kfp.v2 import compiler
@@ -11,6 +8,8 @@ import google.cloud.aiplatform as aip
 from vertex.components.load_data import load_data_component
 from vertex.components.save_data import save_data_component
 from vertex.components.transform_data import transform_data_component
+
+from vertex.lib.utils.config import load_config
 
 
 # This is a pipeline that performs a simple ETL operation, adding a column to a BQ table with a default value
@@ -44,15 +43,9 @@ def pipeline(
     )
 
 
-def load_config(config_name: str) -> Dict:
-    with open(Path(__file__).parent.parent / "configs" / "my_first_pipeline" / f"{config_name}.json") as f:
-        config = json.load(f)
-    return config
-
-
 if __name__ == '__main__':
     PROJECT_ID = os.getenv("PROJECT_ID")
-    SELECTED_CONFIGURATION = load_config("conf_1")
+    SELECTED_CONFIGURATION = load_config("my_first_pipeline", "conf_1")
     PIPELINE_NAME = "my_first_vertex_pipeline"
 
     BUCKET_NAME = f"gs://artifact-vertex-template-264a"
