@@ -10,7 +10,7 @@ plugins:
 nav:
   - Vertex pipeline starter kit: index.md
   - 🚧 Rules of thumb to split components: splitting_components.md
-  - 🚧 Managing python packages and dependencies: managing_packages.md
+  - Managing python packages and dependencies: managing_packages.md
   - 🚧 Managing pipelines configurations: managing_pipeline_configuration.md
   - 🚧 Parallelizing processings in pipelines: parallelizing_processing.md
   - 🚧 Scheduling pipelines: scheduling_pipelines.md
