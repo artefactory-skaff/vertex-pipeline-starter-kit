@@ -48,7 +48,10 @@ When the pipeline has finished running successfully you shoudl see in your termi
 PipelineJob run completed.
 ```
 
-## Explainations
+## Why build pipelines _this_ way and not _that_ way?
+
+[For Artefactors, go read the techdocs on Roadie to get a recap of why we chose to use Vertex like this.
+](https://artefact.roadie.so/docs/default/Component/vertex-pipeline-starter-kit)
 
 ## Repo organisation
 
