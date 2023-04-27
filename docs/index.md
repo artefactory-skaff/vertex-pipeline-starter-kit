@@ -41,7 +41,7 @@ Here are our recommendation to avoid the problems above:
 # Process for working with Vertex pipelines
 
 ## Phase 1 - Notebook exploration
-- Do you usual notebook things, maybe start thinking about writing functions, but no pressure.
+- Do your usual notebook things, maybe start thinking about writing functions, but no pressure.
 
 ## Phase 2 - Refactor your notebook for it to look like a pipeline
 
