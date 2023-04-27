@@ -27,11 +27,13 @@ Vertex AI Pipeline is a managed service to run your Kubeflow Pipelines.
 Our main conviction is that Vertex AI pipelines are overall a pain to work with, and that you should reduce as much as possible the amount of interaction you have with them.
 
 There are two big issues that we address with this starter kit:
+
 - Vertex Pipelines have a high execution time overhead. Your code in a pipeline component will have an incompressible 2 minutes startup time. While it does not look like a lot, it absolutely kills development velocity and cycle time. You can not iterate quickly with a 2 minutes overhead for each execution.
 - Vertex Pipelines are very flexible and there are many ways to develop with them. Too many. Here we try to provide one way of working with the tool that reduces the pain of industrialisation while preserving iteration speed during the exploration, development, and evolution of your ML pipeline.
 
 
 Here are our recommendation to avoid the problems above:
+
 - Use a single base docker image for all components
 - Only use function-based components
 - Embark as little intelligence as possible in the components
