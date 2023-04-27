@@ -8,7 +8,7 @@ plugins:
   - techdocs-core
 
 nav:
-  - Vertex pipeline starter kit: index.md
+  - Home: index.md
   - 🚧 Rules of thumb to split components: splitting_components.md
   - Managing python packages and dependencies: managing_packages.md
   - 🚧 Managing pipelines configurations: managing_pipeline_configuration.md
