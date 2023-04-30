@@ -25,7 +25,7 @@ def pipeline(project_id: str, country: str, start_date: str, end_date: str):
 
 
 def load_config(config_name: str) -> Dict:
-    with open(Path(__file__).parent.parent.parent / "configs" / f"{config_name}.json") as f:
+    with open(Path(__file__).parent.parent / "configs" / f"{config_name}.json") as f:
         config = json.load(f)
     return config
 

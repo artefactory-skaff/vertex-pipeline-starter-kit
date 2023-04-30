@@ -1,6 +1,6 @@
-It is a very good practice to make your pipeline parameterizable. That means replacing all hardcoded values by variables that you are going to pass to the pipeline and eventually to the components.
+It is a very good practice to make your pipelines parameterizable. That means replacing all hardcoded values by variables that you are going to pass to the pipeline and eventually to the components.
 
-Examples of pipeline parameters:
+Pipeline parameters can be:
 
 - Model training parameters
 - Start date and end date of the data you want to work with
@@ -9,9 +9,7 @@ Examples of pipeline parameters:
 - Customer segments
 - ...
 
-Leveraging parametrized pipelines will allow you to run the same pipeline with different parameter sets. This is much more practical to deploy than multiple pipelines with slightly different hardcoded values.
-
-The number of configurations and parameters can get substantial, so how do you properly manage them?
+Leveraging parametrized pipelines will allow you to run the same pipeline with different parameter sets. This is much more practical to deploy and maintain compared to pipelines with slightly different hardcoded values.
 
 ## Passing config values to the pipeline
 
@@ -32,7 +30,7 @@ def dummy_task(project_id: str, country: str, start_date: str, end_date: str):
     pass
 
 
-# Pipeline and its parameters are defined here
+# This part defines the pipeline and its parameters
 @kfp.dsl.pipeline(name="parametrized-pipeline")
 def pipeline(project_id: str, country: str, start_date: str, end_date: str):
     dummy_task(
@@ -43,11 +41,12 @@ def pipeline(project_id: str, country: str, start_date: str, end_date: str):
     )
 
 
+# This part compiles the pipeline and runs it
 if __name__ == '__main__':
     PROJECT_ID = os.getenv("PROJECT_ID")
     PIPELINE_NAME = "parametrized-pipeline"
-    BUCKET_NAME = f"gs://vertex-artifacts"
-    SERVICE_ACCOUNT = f"vertex@{PROJECT_ID}.iam.gserviceaccount.com"
+    BUCKET_NAME = f"gs://<BUCKET_NAME>"
+    SERVICE_ACCOUNT = f"<SA_NAME>@{PROJECT_ID}.iam.gserviceaccount.com"
     
     compiler.Compiler().compile(pipeline_func=pipeline, package_path="./pipeline.json")
     aip.init(project=PROJECT_ID, staging_bucket=BUCKET_NAME)
@@ -78,7 +77,7 @@ The parameters will be clearly displayed in the UI:
 
 !!! warning "Dynamically loading a config in the pipeline"
 
-    Unfortunately, pipeline parameters values are rendered when passed to components. That means you can not easily load configuration in the pipeline body.
+    Pipeline parameters values are rendered when passed to components. That means you can not easily load configuration in the pipeline body itself.
     
     ````python3
     @kfp.dsl.pipeline(name="parametrized-pipeline")
@@ -86,7 +85,7 @@ The parameters will be clearly displayed in the UI:
         print(config_name)  # Result: {{pipelineparam:op=;name=config_name}} -> not rendered
     ````
 
-    You would need a dedicated component to load your configuration and then output the values to downstream tasks. At this point it becomes too complex for no benefits and is not worth it.
+    You would need a dedicated component to load your configuration and then output the values to downstream tasks. This is too complex for no benefits and not worth it.
 
 !!! example "Instead, load the values before compiling the pipeline"
 
@@ -106,7 +105,7 @@ The parameters will be clearly displayed in the UI:
         
         ````python3
         def load_config(config_name: str) -> Dict:
-            with open(Path(__file__).parent.parent.parent / "configs" / f"{config_name}.json") as f:
+            with open(Path(__file__).parent.parent / "configs" / f"{config_name}.json") as f:
                 config = json.load(f)
             return config
         ````
