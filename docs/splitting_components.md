@@ -5,7 +5,7 @@ Having a big monolithic pipeline made of one component is obviously not ideal.
 
 **To iterate faster:** if you find yourself waiting for a lot of code to execute before the execution flow gets to your actual changes, then it's probably a good reason to split your component. For example, if you changed some model training parameters and need to wait for a data preprocessing step for 10 minutes before your model is retrained, split the two steps and save the training dataset as an artifact.
 
-**To leverage orchestration:** parallelization can be achieved fairly easily in pipelines. If some processing is easily splittable, don't hesitate to use this at your advantage for a faster overall pipelines. If you are trying to find the right hyper-parameters for a training, you could have one component by hyper-parameter set:
+**To leverage orchestration:** parallelization can be achieved fairly easily in pipelines. If some processing is easily splittable, don't hesitate to use this at your advantage for a faster pipeline. If you are trying to find the right hyper-parameters for a training, you could have one component by hyper-parameter set:
 
 !!! example "Splitting a grid search between components"
 
