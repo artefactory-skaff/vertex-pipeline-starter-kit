@@ -101,7 +101,7 @@ The parameters will be clearly displayed in the UI:
     )
     ````
 
-    ??? note "`load_config` function"
+    ??? info "`load_config` function"
         
         ````python3
         def load_config(config_name: str) -> Dict:
@@ -110,7 +110,7 @@ The parameters will be clearly displayed in the UI:
             return config
         ````
 
-    ??? note "`config_1.json`"
+    ??? info "`config_1.json`"
         
         ````json
         {
@@ -122,3 +122,80 @@ The parameters will be clearly displayed in the UI:
         ````
 
 ## Storing configs
+
+As your project grows in scale, you will want a way to cleanly store your pipeline configurations. Here are a few suggestions for this
+
+### Locally, in a markup language (json, yaml, toml, etc)
+
+Storing configurations this way is simple and works well. Write one configuration per file. Then you can easily load the right one as a python dict and pass it to your pipeline.
+
+
+### Locally, in python files
+
+You can also centralize your parameters in python files and import them to your pipeline. The issue with that approach is you are going to need to store all your configs in the same file, which can get messy. 
+
+If you want to split the configs, you will either need to: 
+
+- Manually import them all in your pipeline file. This creates a tight coupling between your config files and your pipelines, which is undesirable.
+- Dynamically import them. This is complex, and you do not get autocompletion anymore.
+
+Basically, this is only a good option when you know you will never have a lot of different configs. And even then the benefits are fairly small.
+
+### Remotely
+
+If you need your configs to be centrally available on GCP you may want to store them remotely in a database. 
+
+This can be useful when you need these configurations available elsewhere than just in your pipeline, or if your configuration are not defined in the same codebase as your pipelines. For example, you could have them defined in a Google sheet or as a user input in a Streamlit, etc...
+
+In this case, I would recommend using Firestore (not in Datastore mode). It requires very little setup, and is very easy to use since it stores data as documents (essentially dicts). You will also be able to go and view your stored configurations and their contents in the UI.
+
+??? example "Firestore usage examples"
+    !!! example "Put to Firestore"
+
+        ````python3
+        from typing import Dict, Any, Union
+        
+        from google.cloud import firestore
+        
+        
+        def set(collection: str, document_name: str, document_as_dict: Dict[str, Any]) -> None:
+            client = firestore.Client()
+            client.collection(collection).document(document_name).set(document_as_dict)
+        
+        
+        if __name__ == '__main__':
+            # Add a config in Firestore
+            set(
+                collection="Pipeline1",
+                document_name="config2",
+                document_as_dict={
+                    "project_id": "ocmlf-vial-16",
+                    "country": "france",
+                    "start_date": "2022-01-01",
+                    "end_date": "2022-12-31"
+                }
+            )
+        ````
+
+    !!! example "Get from Firestore"
+
+        ````python3
+        from typing import Dict, Any, Union
+        
+        from google.cloud import firestore
+        
+        
+        def get(collection: str, document: str) -> Union[Dict[str, Any], None]:
+            client = firestore.Client()
+            doc_ref = client.collection(collection).document(document)
+            doc = doc_ref.get().to_dict()  # type: Union[Dict[str, Any], None]
+            return doc
+        
+        
+        if __name__ == '__main__':
+            # Fetch a config from Firestore
+            conf = get("Pipeline1", "config1")
+            print(conf)  # {'end_date': '2022-12-31', 'country': 'france', 'project_id': 'ocmlf-vial-16', 'start_date': '2022-01-01'}
+        ````
+
+You could also drop it as a file on a bucket, but using Firestore has so many advantages over that, that I would not recommend it.
