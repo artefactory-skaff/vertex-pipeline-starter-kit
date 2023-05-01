@@ -9,9 +9,9 @@ plugins:
 
 nav:
   - Home: index.md
-  - Rules of thumb to split components: splitting_components.md
   - Managing python packages and dependencies: managing_packages.md
   - Managing pipelines configurations: managing_pipeline_configuration.md
   - Parallelizing processings in pipelines: parallelizing_processing.md
-  - 🚧 Scheduling pipelines: scheduling_pipelines.md
+  - Rules of thumb to split components: splitting_components.md
   - Using premade components: when_to_use_premade_components.md
+  - Scheduling pipelines: scheduling_pipelines.md
