@@ -145,12 +145,14 @@ Basically, this is only a good option when you know you will never have a lot of
 
 If you need your configs to be centrally available on GCP you may want to store them remotely in a database. 
 
-This can be useful when you need these configurations available elsewhere than just in your pipeline, or if your configuration are not defined in the same codebase as your pipelines. For example, you could have them defined in a Google sheet or as a user input in a Streamlit, etc...
+This can be useful when you need these configurations available elsewhere on GCP than just in your pipeline. 
 
-In this case, I would recommend using Firestore (not in Datastore mode). It requires very little setup, and is very easy to use since it stores data as documents (essentially dicts). You will also be able to go and view your stored configurations and their contents in the UI.
+It is also practical if your configurations are not defined in the same codebase as your pipelines. For example, if you let users pilot pipelines via a Google sheet or a Streamlit, etc...
+
+In this case, using Firestore is a very good option. It requires very little setup, and is very easy to use since it stores data as documents (essentially dicts). You will also be able to go and view your stored configurations and their contents in the UI.
 
 ??? example "Firestore usage examples"
-    !!! example "Put to Firestore"
+    !!! example "Interacting with Firestore"
 
         ````python3
         from typing import Dict, Any, Union
@@ -162,7 +164,14 @@ In this case, I would recommend using Firestore (not in Datastore mode). It requ
             client = firestore.Client()
             client.collection(collection).document(document_name).set(document_as_dict)
         
+
+        def get(collection: str, document: str) -> Union[Dict[str, Any], None]:
+            client = firestore.Client()
+            doc_ref = client.collection(collection).document(document)
+            doc = doc_ref.get().to_dict()  # type: Union[Dict[str, Any], None]
+            return doc
         
+
         if __name__ == '__main__':
             # Add a config in Firestore
             set(
@@ -175,27 +184,12 @@ In this case, I would recommend using Firestore (not in Datastore mode). It requ
                     "end_date": "2022-12-31"
                 }
             )
-        ````
-
-    !!! example "Get from Firestore"
-
-        ````python3
-        from typing import Dict, Any, Union
-        
-        from google.cloud import firestore
-        
-        
-        def get(collection: str, document: str) -> Union[Dict[str, Any], None]:
-            client = firestore.Client()
-            doc_ref = client.collection(collection).document(document)
-            doc = doc_ref.get().to_dict()  # type: Union[Dict[str, Any], None]
-            return doc
-        
-        
-        if __name__ == '__main__':
+            
             # Fetch a config from Firestore
             conf = get("Pipeline1", "config1")
             print(conf)  # {'end_date': '2022-12-31', 'country': 'france', 'project_id': 'ocmlf-vial-16', 'start_date': '2022-01-01'}
         ````
 
-You could also drop it as a file on a bucket, but using Firestore has so many advantages over that, that I would not recommend it.
+    ![](assets/firestore_config.png)
+
+You can also store configurations as files on a bucket, but that is slightly less practical.
