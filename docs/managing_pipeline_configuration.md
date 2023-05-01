@@ -77,7 +77,7 @@ The parameters will be clearly displayed in the UI:
 
 !!! warning "Dynamically loading a config in the pipeline"
 
-    Pipeline parameters values are rendered when passed to components. That means you can not easily load configuration in the pipeline body itself.
+    Pipeline parameters values are rendered when passed to components. That means you can not easily pass a configuration name and load it in the pipeline body itself.
     
     ````python3
     @kfp.dsl.pipeline(name="parametrized-pipeline")
@@ -85,7 +85,7 @@ The parameters will be clearly displayed in the UI:
         print(config_name)  # Result: {{pipelineparam:op=;name=config_name}} -> not rendered
     ````
 
-    You would need a dedicated component to load your configuration and then output the values to downstream tasks. This is too complex for no benefits and not worth it.
+    You would need a dedicated component to load your configuration and then output the values to downstream tasks. This is very complex for no benefits and probably not worth it.
 
 !!! example "Instead, load the values before compiling the pipeline"
 
@@ -97,12 +97,13 @@ The parameters will be clearly displayed in the UI:
         location="europe-west1",
         enable_caching=False,
 
-        parameter_values={**load_config("config_1")},
+        parameter_values=load_config("config_1"),
     )
     ````
 
     ??? info "`load_config` function"
-        
+
+        This function loads configuration values from a file as a `dict`.
         ````python3
         def load_config(config_name: str) -> Dict:
             with open(Path(__file__).parent.parent / "configs" / f"{config_name}.json") as f:
@@ -112,6 +113,7 @@ The parameters will be clearly displayed in the UI:
 
     ??? info "`config_1.json`"
         
+        This file contains the configuration we want to load.
         ````json
         {
           "project_id": "ocmlf-vial-16",
@@ -145,7 +147,7 @@ Basically, this is only a good option when you know you will never have a lot of
 
 If you need your configs to be centrally available on GCP you may want to store them remotely in a database. 
 
-This can be useful when you need these configurations available elsewhere on GCP than just in your pipeline. 
+This can be useful when you need these configurations available elsewhere on GCP and not just in your pipeline. 
 
 It is also practical if your configurations are not defined in the same codebase as your pipelines. For example, if you let users pilot pipelines via a Google sheet or a Streamlit, etc...
 
