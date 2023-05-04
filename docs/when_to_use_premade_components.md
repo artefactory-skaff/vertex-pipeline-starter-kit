@@ -12,6 +12,6 @@ They provide component interfaces for the rest of the Vertex AI platform, BQ ML,
 
 Given this limitations we do not recommend using the components that only serve as wrapper for a well functioning python API (hence replacing only few lines of codes) as for those cases we feel the loss of not being able to run locally is not worth it compare to the gains. 
 
-However for some uses cases  (ex: batch predictions), pre-made components can actually save you a lot of time so knowing about these components, and potentially integrating them in your pipelines can be a great idea and save some precious time despite their limitations. 
+However for some uses cases (ex: batch predictions), pre-made components can actually save you a lot of time so knowing about these components, and potentially integrating them in your pipelines can be a great idea and save some precious time despite their limitations. 
 Make sure you read their docs thoroughly to ensure they do what you need them to and limit integration risks.
 

@@ -39,7 +39,7 @@ Here are our recommendation to avoid the problems above:
 - Embark as little intelligence as possible in the components
 - Have the intelligence concentrated in a regular python folder/files structure
 - This code should be locally executable for quick iteration
-- Make your configurations variables visible in the UI by explicitly passing them to components and pipelines.
+- Make your configurations variables visible in the UI by explicitly passing them to components and pipelines
 
 # Process for working with Vertex pipelines
 
@@ -56,7 +56,7 @@ Note that if you are not a fan of jupyter notebooks you can easily replace noteb
 
 - Wrap code in functions to make them easily transferable to scripts
 - Write your Notebook in a way that will mirror an ML pipeline: a section for a pipeline step/component, the notebook itself could represent the pipeline.
-- When loading data from files, or tables to pandas dataframe, make sure to explicitly cast to the types that you will use (for cases which could be ambiguous). Vertex has a way of loading data that may produce similar but different data types.
+- When loading data from files, or tables to pandas dataframe, make sure to explicitly cast to the types that you will use (for cases which are ambiguous). Vertex has a way of loading data that may produce similar but different data types.
 - Type hint functions inputs/outputs as a general good practice and to identify at a glance the vertex-compatible ones
 
 
@@ -66,13 +66,11 @@ Note that if you are not a fan of jupyter notebooks you can easily replace noteb
 - Those functions will be called both: 
   - In your notebook for iterating and testing new features
   - By your vertex components for running the pipelines
-- At this point your  notebook should only include import, some config definition and application of your main functions.
+- At this point your notebook should only include import, some config definition and application of your main functions.
 - Have clear entrypoint functions to then use in components
 - Maybe even write a few unit/integration tests
 - Have a fully functional workflow before even thinking of moving to Vertex Pipelines
 - `notebooks/vertex_pipelines/my_first_pipeline.ipynb` gives an example of how do this for a simple ETL
-
-
 
 Example of pipeline notebook for a simple ETL (each section is a component):
 ![](assets/notebook_pipeline.png)
@@ -81,7 +79,7 @@ Example of pipeline notebook for a simple ETL (each section is a component):
 ## Phase 4 - Wrap this code in components and pipelines
 
 - Now we are finally doing some vertex ! 
-- Write your function based components, you should only load / save your data (as this is vertex specific code) and import and call your top-level functions  Again, if you find yourself writing business or technical logic in the component, you should think about moving it to your `lib`
+- Write your function based components, you should only load / save your data (as this is vertex specific code) and import and call your top-level functions. Again, if you find yourself writing business or technical logic in the component, you should think about moving it to your `lib`
 - Finally, you can compose your pipeline from the components that you defined.
 - Run your pipeline, and hope for the best.
 
