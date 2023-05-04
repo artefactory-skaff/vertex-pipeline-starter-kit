@@ -73,6 +73,15 @@ if __name__ == '__main__':
 The parameters will be clearly displayed in the UI:
 ![](assets/parametrized_pipeline.png)
 
+Making all your parameters explicit as pipeline and component arguments represents some overhead in terms of code
+but for us it is the best solution as it makes all parameters visible in the UI and makes allows people who read the code to see very easily how each parameter is defined
+
+Alternative options that are possible (that we do generally not recommend !): 
+- Importing parameters directly in lib or component files => this bypasses the vertex UI and can make debugging much harder
+- Having a config dictionary and passing it as an arguments in pipeline / components. This solution is less bad and can actually have some application to pass on very large or well defined configs (ex: model parameters to pass directly to Catboost). Config will be visible in the UI but not in an easy to read way.  
+
+
+
 ### Dynamically loading pipeline parameters
 
 !!! warning "Dynamically loading a config in the pipeline"
