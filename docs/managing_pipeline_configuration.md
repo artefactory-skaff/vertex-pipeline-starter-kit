@@ -74,7 +74,7 @@ The parameters will be clearly displayed in the UI:
 ![](assets/parametrized_pipeline.png)
 
 Making all your parameters explicit as pipeline and component arguments represents some overhead in terms of code
-but for us it is the best solution as it makes all parameters visible in the UI and makes allows people who read the code to see very easily how each parameter is defined
+but for us it is the best solution as it makes all parameters visible in the UI and allows people who read the code to see very easily how each parameter is defined
 
 Alternative options that are possible (that we do generally not recommend !): 
 - Importing parameters directly in lib or component files => this bypasses the vertex UI and can make debugging much harder
