@@ -1,7 +1,9 @@
 It can be difficult to decide how to split your pipeline into components. Overall, components should aim to be a self-contained business logic unit with minimal inputs and outputs.
 
-Note that for the purpose of showing how to pass data from component to component, the components in `vertex/pipelines/my_first_pipeline.py` are very small components. 
-In practice for such a simple pipeline, a single component pipeline would be better. 
+!!! note ""
+    The components in `vertex/pipelines/my_first_pipeline.py` are very small. 
+    In practice for such a simple pipeline a single component would be better, but the goal here is to illustrate how 
+    to pass parameters within a pipeline.
 
 ## When to split a component
 Having a big monolithic pipeline made of one component is obviously not ideal. 
