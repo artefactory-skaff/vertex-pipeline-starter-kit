@@ -5,14 +5,12 @@ It is based on the collective knowledge and feedbacks of past Artefact projects 
 It also touches on patterns that we have seen not work well or had worse velocity and reliability in our experience.
 
 # Understanding the Vertex AI platform
-
 Before we start, it is important to mention the difference between Vertex AI and Vertex AI Pipelines. Vertex AI is a set of services gathered in a unified service called "Vertex AI" (e.g. Vertex AI Dataset, Vertex AI Pipelines, Vertex AI endpoints, etc.). As you can see, Vertex AI Pipelines is simply a service included in the Vertex AI environment.
 
 Have you been hearing about Vertex AI Pipelines for months without really understanding what it is?
 
 
 # Vertex pipelines
-
 So, what are Vertex AI Pipelines?
 
 Vertex AI Pipelines is a managed service offered by GCP to execute Kubeflow Pipelines.
@@ -23,7 +21,6 @@ Vertex AI Pipeline is a managed service to run your Kubeflow Pipelines.
 
 
 ## Convictions
-
 Our main conviction is that Vertex AI pipelines are overall a pain to work with, and that you should reduce as much as possible the amount of interaction you have with them.
 
 There are two big issues that we address with this starter kit:
@@ -42,7 +39,6 @@ Here are our recommendation to avoid the problems above:
 - Make your configurations variables visible in the UI by explicitly passing them to components and pipelines
 
 # Process for working with Vertex pipelines
-
 Here we describe a workflow we have tested and recommend when using vertex pipelines. 
 An example of following this workflow is included in this repository
 (final pipeline output is `vertex/pipelines/my_first_pipeline.py` )
@@ -53,7 +49,6 @@ Note that if you are not a fan of jupyter notebooks you can easily replace noteb
 - Do your usual notebook things, maybe start thinking about writing functions, but no pressure.
 
 ## Phase 2 - Refactor your notebook for it to look like a pipeline
-
 - Wrap code in functions to make them easily transferable to scripts
 - Write your Notebook in a way that will mirror an ML pipeline: a section for a pipeline step/component, the notebook itself could represent the pipeline.
 - When loading data from files, or tables to pandas dataframe, make sure to explicitly cast to the types that you will use (for cases which are ambiguous). Vertex has a way of loading data that may produce similar but different data types.
@@ -61,7 +56,6 @@ Note that if you are not a fan of jupyter notebooks you can easily replace noteb
 
 
 ## Phase 3 - Move your code to libraries 
-
 - Migrate main and subfunctions to a `lib` folder. 
 - Those functions will be called both: 
   - In your notebook for iterating and testing new features
@@ -77,7 +71,6 @@ Example of pipeline notebook for a simple ETL (each section is a component):
 
 
 ## Phase 4 - Wrap this code in components and pipelines
-
 - Now we are finally doing some vertex ! 
 - Write your function based components, you should only load / save your data (as this is vertex specific code) and import and call your top-level functions. Again, if you find yourself writing business or technical logic in the component, you should think about moving it to your `lib`
 - Finally, you can compose your pipeline from the components that you defined.
@@ -103,7 +96,6 @@ Example of pipeline notebook for a simple ETL (each section is a component):
     ```
 
 ## Phase 5 - Iterate and improve
-
 You are probably going to need to go back to phase 1 to iterate and go through the motions again, from notebook to running pipeline. This is expected and normal. Doing it often will make you think end-to-end and allow you to close the feedback loop with users, thus limiting tunnel effect. It will also highlight potential integration risks within and around the pipeline early on. See: Walking skeleton approach.
 
 It is a very good idea to keep maintaining the notebooks you used for creating a pipeline so that they can be used for quickly updating existing pipeline :  modify your libs test in the notebook and once everything is working, test with vertex. 
