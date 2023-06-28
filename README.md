@@ -18,7 +18,7 @@ gcloud auth application-default login
 - Run `make build_image` to initialize a Vertex base image on your project.
 - In BigQuery create some sample data that will be used by our example pipeline.
   - Create a dataset
-    - `bq --location=EU mk --dataset $PROJECT_ID:vertex_dataset`
+    - `bq --location=europe-west1 mk --dataset $PROJECT_ID:vertex_dataset`
   - Create a dummy table with some sample data
     - `bq query --destination_table vertex_dataset.mytable --use_legacy_sql=false 'SELECT 1 AS one, 2 AS two'`
 - Edit `conf_1.json` with your new dataset and tables
