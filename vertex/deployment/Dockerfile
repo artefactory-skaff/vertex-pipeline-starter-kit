@@ -6,4 +6,4 @@ ENV PROJECT_ID=${PROJECT_ID}
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY vertex .@

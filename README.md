@@ -12,16 +12,27 @@ gcloud auth application-default login
 ```
 
 ### Create some resources in the target GCP project
-- Create a service account which will be used by pipelines. Grant it the `Editor` role.
-- Create a GCS bucket that Vertex pipelines will use.
-- Enter the correct bucket and SA names in `vertex/pipelines/my_first_pipeline.py`
-- Run `make build_image` to initialize a Vertex base image on your project.
+- Create a service account which will be used by pipelines.
+  ```shell
+  gcloud iam service-accounts create vertex
+  ```
+- Grant it the `Editor` role.
+  ```shell
+  gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:vertex@$PROJECT_ID.iam.gserviceaccount.com" --role="roles/editor"
+  ```
+- Create a GCS bucket that Vertex pipelines will use to store artifacts under the hood.
+  ```shell
+  gcloud storage buckets create gs://vertex-$PROJECT_ID --location=europe-west1
+  ```
+- Initialize a Vertex base image on your project. While it builds, take a look at [this cloudbuild file](vertex/deployment/cloudbuild.yaml) to see what is inside the base image.
+  ```shell
+  make build_image
+  ```
 - In BigQuery create some sample data that will be used by our example pipeline.
-  - Create a dataset
-    - `bq --location=europe-west1 mk --dataset $PROJECT_ID:vertex_dataset`
-  - Create a dummy table with some sample data
-    - `bq query --destination_table vertex_dataset.mytable --use_legacy_sql=false 'SELECT 1 AS one, 2 AS two'`
-- Edit `conf_1.json` with your new dataset and tables
+  ```shell
+  bq --location=europe-west1 mk --dataset $PROJECT_ID:vertex_dataset
+  bq query --destination_table vertex_dataset.mytable --use_legacy_sql=false 'SELECT 1 AS one, 2 AS two'
+  ```
 
 ### Run a pipeline
 Running a pipeline is just like running a normal python file.
@@ -43,7 +54,9 @@ PipelineState.PIPELINE_STATE_RUNNING
 When you click on the console.cloud.google.com link it should direct you to GCP and you should be able to see the 
 pipeline running. It will take few minutes to finish depending on your pipeline.
 
-When the pipeline has finished running successfully you shoudl see in your terminal:
+This pipeline will load the BigQuery table we created earlier, add a new column to it, and save it as a new table. Take a look at [the pipeline code](vertex/pipelines/my_first_pipeline.py) and at the [configuration file](vertex/configs/my_first_pipeline/conf_1.json) that is injected at compile time. 
+
+When the pipeline has finished running successfully you should see in your terminal:
 ```shell
 PipelineJob run completed.
 ```
@@ -52,6 +65,11 @@ PipelineJob run completed.
 
 [For Artefactors, go read the techdocs on Roadie to get a recap of why we chose to use Vertex like this.
 ](https://artefact.roadie.so/docs/default/Component/vertex-pipeline-starter-kit)
+
+Otherwise, you can render the mkdocs locally:
+```shell
+mkdocs serve
+```
 
 ## Repo organisation
 

@@ -48,7 +48,7 @@ if __name__ == '__main__':
     SELECTED_CONFIGURATION = load_config("my_first_pipeline", "conf_1")
     PIPELINE_NAME = "my_first_vertex_pipeline"
 
-    BUCKET_NAME = f"gs://artifact-vertex-template-264a"
+    BUCKET_NAME = f"gs://vertex-{PROJECT_ID}"
     SERVICE_ACCOUNT = f"vertex@{PROJECT_ID}.iam.gserviceaccount.com"
 
     compiler.Compiler().compile(pipeline_func=pipeline, package_path="./pipeline.json")
