@@ -45,8 +45,8 @@ def pipeline(project_id: str, country: str, start_date: str, end_date: str):
 if __name__ == '__main__':
     PROJECT_ID = os.getenv("PROJECT_ID")
     PIPELINE_NAME = "parametrized-pipeline"
-    BUCKET_NAME = f"gs://<BUCKET_NAME>"
-    SERVICE_ACCOUNT = f"<SA_NAME>@{PROJECT_ID}.iam.gserviceaccount.com"
+    BUCKET_NAME = f"gs://vertex-{PROJECT_ID}"
+    SERVICE_ACCOUNT = f"vertex@{PROJECT_ID}.iam.gserviceaccount.com"
     
     compiler.Compiler().compile(pipeline_func=pipeline, package_path="./pipeline.json")
     aip.init(project=PROJECT_ID, staging_bucket=BUCKET_NAME)

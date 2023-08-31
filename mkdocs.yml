@@ -9,6 +9,7 @@ plugins:
 
 nav:
   - Home: index.md
+  - Docker base image for pipelines: base_image.md
   - Managing python packages and dependencies: managing_packages.md
   - Managing pipelines configurations: managing_pipeline_configuration.md
   - Parallelizing processings in pipelines: parallelizing_processing.md
