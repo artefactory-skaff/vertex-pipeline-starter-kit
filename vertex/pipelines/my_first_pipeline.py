@@ -38,7 +38,7 @@ def pipeline(
 
     save_data_component(
         df_transformed=transform_data_task.outputs["df_transformed_dataset"],
-        project_id=PROJECT_ID,
+        project_id=project_id,
         output_table=output_table
     )
 
