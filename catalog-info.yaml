@@ -5,6 +5,10 @@ metadata:
   title: Vertex AI pipelines starter kit.
   description: >
     This is a very basic GitHub repo template to learn how to smoothly industrialize Vertex Pipelines. This is not suitable for prod.
+  labels:
+    type: 
+      - "educational"
+      - "accelerator"
   annotations:
     github.com/project-slug: artefactory/vertex-pipeline-starter-kit
     backstage.io/techdocs-ref: dir:.
