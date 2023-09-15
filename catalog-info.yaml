@@ -1,4 +1,4 @@
-apiVersion: backstage.io/v1alpha1
+capiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: vertex-pipeline-starter-kit
@@ -6,9 +6,8 @@ metadata:
   description: >
     This is a very basic GitHub repo template to learn how to smoothly industrialize Vertex Pipelines. This is not suitable for prod.
   labels:
-    type: 
-      - "educational"
-      - "accelerator"
+    educational: true
+    accelerator: true
   annotations:
     github.com/project-slug: artefactory/vertex-pipeline-starter-kit
     backstage.io/techdocs-ref: dir:.
