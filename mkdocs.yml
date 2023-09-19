@@ -1,4 +1,4 @@
-# This is only used for documentation generation in Roadie. It is not part of the vertex started kit.
+# This is only used for documentation generation in Roadie. It is not part of the vertex starter kit.
 
 site_name: Vertex pipelines starter kit
 repo_name: artefactory/vertex-pipeline-starter-kit
@@ -15,4 +15,11 @@ nav:
   - Parallelizing processings in pipelines: parallelizing_processing.md
   - Rules of thumb to split components: splitting_components.md
   - Using premade components: when_to_use_premade_components.md
-  - Scheduling pipelines: scheduling_pipelines.md
+  - How-tos: 
+    - How to allocate more RAM and CPU in a pipeline?: howto_CPU_RAM_resources.md
+    - How to pass a complex object between components?: howto_pass_complex_objects.md
+    - How to condition the execution of a component?: howto_conditional_components.md
+    - 🚧 How to trigger an alert when my vertex pipeline fails?: howto_act_on_failure.md
+    - How to schedule pipelines?: howto_schedule_pipelines.md
+    - 🚧 How to manage GPUs: howto_gpu.md
+  
