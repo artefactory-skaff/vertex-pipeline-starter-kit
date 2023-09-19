@@ -33,7 +33,7 @@ def load_config(config_name: str) -> Dict:
 if __name__ == '__main__':
     PROJECT_ID = os.getenv("PROJECT_ID")
     PIPELINE_NAME = "parametrized-pipeline"
-    BUCKET_NAME = f"gs://vertex-artifacts"
+    BUCKET_NAME = f"gs://vertex-{PROJECT_ID}"
     SERVICE_ACCOUNT = f"vertex@{PROJECT_ID}.iam.gserviceaccount.com"
 
     compiler.Compiler().compile(pipeline_func=pipeline, package_path="./pipeline.json")

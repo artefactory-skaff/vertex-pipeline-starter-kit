@@ -7,10 +7,7 @@ It is based on the collective knowledge and feedbacks of past Artefact projects 
 It also touches on patterns that we have seen not work well or had worse velocity and reliability in our experience.
 
 ## Understanding the Vertex AI platform
-Before we start, it is important to mention the difference between Vertex AI and Vertex AI Pipelines. Vertex AI is a set of services gathered in a unified service called "Vertex AI" (e.g. Vertex AI Dataset, Vertex AI Pipelines, Vertex AI endpoints, etc.). As you can see, Vertex AI Pipelines is simply a service included in the Vertex AI environment.
-
-Have you been hearing about Vertex AI Pipelines for months without really understanding what it is?
-
+Before we start, it is important to mention the difference between Vertex AI and Vertex AI Pipelines. Vertex AI is a set of services gathered in a unified platform to accelerate data science projects: Vertex AI Dataset, Vertex AI Pipelines, Vertex AI endpoints, etc... Vertex AI Pipelines is one of the service included in the Vertex AI platform.
 
 ## Vertex pipelines
 So, what are Vertex AI Pipelines?
@@ -23,22 +20,23 @@ Vertex AI Pipeline is a managed service to run your Kubeflow Pipelines.
 
 
 ### Convictions
-Our main conviction is that Vertex AI pipelines are overall a pain to work with, and that you should reduce as much as possible the amount of interaction you have with them.
+Kubeflow pipelines is a very powerful tool, but it is also very complex. On top of that you will be using it in a managed environment, which steepens the learning curve. To make developping vertex pipelines less painful, our main recommandation is to structure your code in a way that will allow you to work just like you would in a regular python project, and only use Vertex pipelines for orchestration and nothing else.
 
-There are two big issues that we address with this starter kit:
+We want a strict eparation of concerns between the application code that does the data science, and the Vertex pipeline that will run it in an industrialized context.
 
-- Vertex Pipelines have a high execution time overhead. Your code in a pipeline component will have an incompressible 2 minutes startup time. While it does not look like a lot, it absolutely kills development velocity and cycle time. You can not iterate quickly with a 2 minutes overhead for each execution.
+On top of that, there are two big issues that we address with this starter kit:
+
+- Vertex Pipelines have a high execution time overhead. Your code in a pipeline component will have an incompressible 2 minutes startup time to provision resources. While it does not look like a lot, it absolutely kills development velocity and cycle time. You can not iterate quickly with a 2 minutes overhead for each execution.
 - Vertex Pipelines are very flexible and there are many ways to develop with them. Too many. Here we try to provide one way of working with the tool that reduces the pain of industrialisation while preserving iteration speed during the exploration, development, and evolution of your ML pipeline.
 
 
 Here are our recommendation to avoid the problems above:
 
-- Use a single base docker image for all components
-- Only use function-based components
-- Embark as little intelligence as possible in the components
-- Have the intelligence concentrated in a regular python folder/files structure
-- This code should be locally executable for quick iteration
-- Make your configurations variables visible in the UI by explicitly passing them to components and pipelines
+- **Use a single base docker image for all components.** This is the environement your code will run in when in a pipeline. Don't lose time creating a tailor-made one for each component. Save time by having the same image with all the required dependencies and use it everywhere.
+- **Only use function-based components.** Container-based components are much harder to build, deploy, and maintain. Use the slimmest possible function-based components to reduce your operational load.
+- **Embark as little intelligence as possible in the components.** Enforcing a strong separation of concerns between your business and orchestration logic will allow you handle these two functionalities separately, making debugging easier and faster. 
+- **Have the business logic concentrated in a regular python folder/files structure.** This will facilitate the separation of concerns, allow you to run your code locally, unit-test it easily, etc...
+- **This code should be locally executable.** Essential to be able to quickly iterate on it.
 
 ## Process for working with Vertex pipelines
 Here we describe a workflow we have tested and recommend when using vertex pipelines. 
