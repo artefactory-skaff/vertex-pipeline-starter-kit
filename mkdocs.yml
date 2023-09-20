@@ -21,5 +21,5 @@ nav:
     - How to condition the execution of a component?: howto_conditional_components.md
     - 🚧 How to trigger an alert when my vertex pipeline fails?: howto_act_on_failure.md
     - How to schedule pipelines?: howto_schedule_pipelines.md
-    - 🚧 How to manage GPUs: howto_gpu.md
+    - How to manage GPUs: howto_gpu.md
   
