@@ -13,7 +13,9 @@ Please refer to this excellent [tutorial](https://towardsdatascience.com/a-compl
 
 ### 1. Identify the CUDA version of your local environment
 
-This take-away from the article is important: 
+This take-away from the article is important:
+
+> [!IMPORTANT]
 > Always use the same CUDA and cuDNN version in Docker image as present in the underlying host machine
 
 So the first step is to identify which CUDA version and PyTorch version you are using in your local environment.
@@ -34,9 +36,7 @@ Means I have CUDA 11 installed, and CuDNN 8.
 
 Prefers `nvidia/cuda` Docker images compared to `pytorch/` and  `vertex-ai/training`.
 
-You need to select a Docker image that matches this version.
-
-In my case, I found this one: `nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04`
+You need to select a Docker image that matches this version. Check out the [Docker Hub](https://hub.docker.com/r/nvidia/cuda/tags) to find a compatible version. In my case, I found [this one](https://hub.docker.com/layers/nvidia/cuda/11.7.1-cudnn8-runtime-ubuntu20.04/images/sha256-352a7039e533fb22d24de831d09aa3791431c2e5809c279a336fe0aeef72b7fb?context=explore): `nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04`
 
 so I would start my dockerfile with:
 
@@ -50,10 +50,13 @@ You need to install the same Python version as the one you are using in your loc
 
 In my case, I am using Python 3.9, so I would add this line to my Dockerfile:
 
-```Dockerfile
+```Dockerfile hl_lines="2-21"
 FROM nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04
 ENV PYTHON_VERSION=3.9
 ENV CONTAINER_TIMEZONE=Europe/Paris
+
+# Set the timezone to prevent tzdata asking for user input
+RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 
 RUN apt update \
     && apt install --no-install-recommends -y build-essential \
@@ -73,13 +76,15 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
 
 ### 4. Install the PyTorch or Tensorflow version that is compatible with your CUDA version
 
+> [!WARNING]
 > Don’t blindly install latest tensorflow/pytorch library from PyPi. It is absolutely incorrect that any version of this both package will work with any version of CUDA, cuDNN. In fact, the combination of the latest version of both, tensorflow/pytorch with CUDA/cuDNN may not be compatible
 
 For PyTorch for example, go to the [Install Section](https://pytorch.org/#:~:text=Aid%20to%20Ukraine.-,INSTALL%20PYTORCH,-Select%20your%20preferences) to find a compatible version. You can also browse the previous versions [here](https://pytorch.org/get-started/previous-versions/).
 
 You need to install a GPU version.
 In my case, I found this one: `torch==2.0.0+cu117` in the website, with the install instruction:
-```
+
+```bash
 pip install torch==2.0.0+cu117 --index-url https://download.pytorch.org/whl/cu117
 ```
 
@@ -87,7 +92,7 @@ So I would add this line to my Dockerfile, with the `--no-cache-dir` option to a
 
 Then, I also install the requirements.txt file of my project, and copy the source code.
 
-```Dockerfile
+```Dockerfile hl_lines="21-26"
 FROM nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04
 
 ARG PROJECT_ID
