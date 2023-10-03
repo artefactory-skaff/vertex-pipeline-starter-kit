@@ -6,7 +6,7 @@ metadata:
   description: >
     This is a very basic GitHub repo template to learn how to smoothly industrialize Vertex Pipelines. This is not suitable for prod.
   labels:
-    accelerator: "1"
+    technical: "1"
     educational: "1"
   annotations:
     github.com/project-slug: artefactory/vertex-pipeline-starter-kit
