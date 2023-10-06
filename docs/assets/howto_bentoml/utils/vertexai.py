@@ -107,7 +107,7 @@ def create_endpoint(
         display_name=endpoint_name,
         project=PROJECT_ID,
         location=LOCATION,
-        description="Product classification endpoint, deployed automatically with Vertex AI",
+        description="Iris classification endpoint, deployed automatically with Vertex AI",
         enable_request_response_logging=enable_request_response_logging,
         request_response_logging_sampling_rate=request_response_logging_sampling_rate,
         request_response_logging_bq_destination_table=BQ_DESTINATION_TABLE,
