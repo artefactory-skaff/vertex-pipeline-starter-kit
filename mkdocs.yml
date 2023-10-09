@@ -7,6 +7,9 @@ repo_url: https://github.com/artefactory/vertex-pipeline-starter-kit
 plugins:
   - techdocs-core
 
+markdown_extensions:
+  - pymdownx.snippets:
+
 nav:
   - Home: index.md
   - Docker base image for pipelines: base_image.md
