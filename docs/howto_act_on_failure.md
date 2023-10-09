@@ -62,7 +62,7 @@ Here is an example of a custom component that sends a notification to a Slack ch
 
 === "1. Create message to be sent to Slack"
 
-    Message cration includes:
+    Message creation includes:
 
     * Retrieving information about the job
     * Creating the string template
