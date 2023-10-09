@@ -5,7 +5,7 @@ It can be an alternative to [Tensorflow Serving](https://www.tensorflow.org/tfx/
 The purpose of this tutorial is to show you how to deploy a BentoML bundle to a VertexAI Endpoint.
 
 Along with this tutorial, an example is provided, with some useful function to perform this process in a VertexAI pipeline.
-Check it out: [docs/assets/howto_bentoml]
+Check it out: [docs/assets/howto_bentoml](assets/howto_bentoml/)
 
 ## Key ressources
 
@@ -19,15 +19,18 @@ Please read these ressources first:
 
 ## Steps
 
-1. Save the model to BentoML registry
-2. Create the service
-3. Write the bentofile.yaml file
-4. Build the Docker image
-5. Test the service locally
-6. Upload the model to Google Artifact Regitry (GAR)
-7. Import the model to VertexAI models
-8. Deploy the model to VertexAI Endpoint
-9. Test the endpoint
+- [How to deploy a BentoML bundle to VertexAI](#how-to-deploy-a-bentoml-bundle-to-vertexai)
+  - [Key ressources](#key-ressources)
+  - [Steps](#steps)
+    - [1. Save the model to BentoML registry](#1-save-the-model-to-bentoml-registry)
+    - [2. Create the API service](#2-create-the-api-service)
+    - [3. Write the bentofile.yaml file](#3-write-the-bentofileyaml-file)
+    - [4. Build the Docker image](#4-build-the-docker-image)
+    - [5. Testing the service locally](#5-testing-the-service-locally)
+    - [6. Upload the model to Google Artifact Regitry (GAR)](#6-upload-the-model-to-google-artifact-regitry-gar)
+    - [7.Import image to VertexAI model registry](#7import-image-to-vertexai-model-registry)
+    - [8.Deploy model to VertexAI endpoint](#8deploy-model-to-vertexai-endpoint)
+    - [9.Test the endpoint](#9test-the-endpoint)
 
 Steps 1 to 4 are the same as in the [Quickstart BentoML](https://colab.research.google.com/github/bentoml/BentoML/blob/main/examples/quickstart/iris_classifier.ipynb#scrollTo=8c215454). There are inherant to any BentoML project, so I won't get too much into details here. I'll only focus on the things that you need to pay attention to to make sure it works with VertexAI.
 Steps 5 to 7 are specific to VertexAI deployment.
@@ -151,13 +154,13 @@ bentoml containerize $SERVICE:$VERSION -t $IMAGE_URI
 ```
 
 However, it's not handy to use the CLI if you want to do this step in a Python Script, and there is a lack of documentation on that.
-So I wrote a [Python script](docs/assets/howto_bentoml/workflows/build_bento.py) to do this step, that can be used in a VertexAI component.
+So I wrote a [Python script](assets/howto_bentoml/workflows/build_bento.py) to do this step, that can be used in a VertexAI component.
 
 Under the hood, when you do the `bentoml containerize` command, docker actually builds the image.
 If you want to use this as a VertexAI component, you cannot rely on Docker as you are already in a container. 
 The workaround here is to use Cloud Build to build the image.
 
-Check it out: [docs/assets/howto_bentoml/workflows/build_bento.py](docs/assets/howto_bentoml/workflows/build_bento.py)
+Check it out: [assets/howto_bentoml/workflows/build_bento.py](assets/howto_bentoml/workflows/build_bento.py)
 
 ### 5. Testing the service locally
 
@@ -243,7 +246,7 @@ else
 fi
 ```
 
-And the Python Equivalent: [docs/assets/howto_bentoml/workflows/import_model.py](docs/assets/howto_bentoml/workflows/push_model.py)
+And the Python Equivalent: [assets/howto_bentoml/workflows/import_model.py](assets/howto_bentoml/workflows/push_model.py)
 
 ### 8.Deploy model to VertexAI endpoint
 
@@ -271,7 +274,7 @@ You will have to fix the error, then go thought the whole process again.
 
 To know more, check out the [official documentation](https://cloud.google.com/vertex-ai/docs/predictions/use-custom-container#examples).
 
-### 7.Test the endpoint
+### 9.Test the endpoint
 
 ```bash
 # Get the endpoint ID from the endpoint name
