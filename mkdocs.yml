@@ -7,6 +7,9 @@ repo_url: https://github.com/artefactory/vertex-pipeline-starter-kit
 plugins:
   - techdocs-core
 
+markdown_extensions:
+  - pymdownx.snippets:
+
 nav:
   - Home: index.md
   - Docker base image for pipelines: base_image.md
@@ -19,7 +22,7 @@ nav:
     - How to allocate more RAM and CPU in a pipeline?: howto_CPU_RAM_resources.md
     - How to pass a complex object between components?: howto_pass_complex_objects.md
     - How to condition the execution of a component?: howto_conditional_components.md
-    - 🚧 How to trigger an alert when my vertex pipeline fails?: howto_act_on_failure.md
+    - How to trigger an alert when my vertex pipeline fails?: howto_act_on_failure.md
     - How to schedule pipelines?: howto_schedule_pipelines.md
     - How to manage GPUs: howto_gpu.md
   
