@@ -4,7 +4,7 @@
 The purpose of this tutorial is to show you how to deploy a BentoML bundle to a VertexAI Endpoint.
 
 Along with this tutorial, an example is provided, with some useful function to perform this process in a VertexAI pipeline.
-Check it out: [docs/assets/howto_bentoml](assets/howto_bentoml/)
+[Check it out on Github](https://github.com/artefactory/vertex-pipeline-starter-kit/tree/doc/hv-add-bentoml-howto/docs/assets/howto_bentoml)
 
 ## Table of contents
 
@@ -30,8 +30,8 @@ BentoML is a library that allows you to turn your ML model into production API e
 It will handle the creation of the serving API and the Docker image. It can be an alternative to [Tensorflow Serving](https://www.tensorflow.org/tfx/guide/serving) or [TorchServe](https://github.com/pytorch/serve/tree/master/examples).
 
 !!! quote
-  Shipping ML models to production is broken. Data Scientists may not have all the expertise in building production services and the trained models they delivered are very hard to test and deploy. This often leads to a time consuming and error-prone workflow, where a pickled model or weights file is handed over to a software engineering team.
-  BentoML is an end-to-end solution for model serving, making it possible for Data Science teams to ship their models as prediction services, in a way that is easy to test, easy to deploy, and easy to integrate with other DevOps tools.
+    Shipping ML models to production is broken. Data Scientists may not have all the expertise in building production services and the trained models they delivered are very hard to test and deploy. This often leads to a time consuming and error-prone workflow, where a pickled model or weights file is handed over to a software engineering team.
+    BentoML is an end-to-end solution for model serving, making it possible for Data Science teams to ship their models as prediction services, in a way that is easy to test, easy to deploy, and easy to integrate with other DevOps tools.
 
 Please read these ressources to go further:
 
@@ -52,39 +52,39 @@ Please read these ressources first:
 
 Here are the steps to deploy a BentoML bundle to VertexAI:
 
-- 1. Save the model to BentoML registry
-- 2. Create the API service
-- 3. Write the bentofile.yaml file
-- 4. Build the Docker image
-- 5. Testing the service locally
-- 6. Upload the model to Google Artifact Regitry (GAR)
-- 7. Import image to VertexAI model registry
-- 8. Deploy model to VertexAI endpoint
-- 9. Test the endpoint
+1. Save the model to BentoML registry
+2. Create the API service
+3. Write the bentofile.yaml file
+4. Build the Docker image
+5. Testing the service locally
+6. Upload the model to Google Artifact Regitry (GAR)
+7. Import image to VertexAI model registry
+8. Deploy model to VertexAI endpoint
+9. Test the endpoint
 
 Steps 1 to 5 are pure BentoML development steps. Here is a high-level overview of what they do:
 
-- 1. Save the model to BentoML registry: In this step, you save the trained model from your ML framework (scikit, pytorch) to a BentoML model registry.
-- 2. Create the API service: Create a `service.py` file to wrap your model and lay out the serving logic.
-- 3. Write the bentofile.yaml file: Package your model and the BentoML Service into a Bento through a configuration YAML file. Each Bento corresponds to a directory that contains all the source code, dependencies, and model files required to serve the Bento, and an auto-generated Dockerfile for containerization.
-- 4. Build the Docker image: This will build the Docker image and push it.
-- 5. Testing the service locally: In this step, you test that the prediction service works locally.
+1. **Save the model to BentoML registry:** In this step, you save the trained model from your ML framework (scikit, pytorch) to a BentoML model registry.
+2. **Create the API service:** Create a `service.py` file to wrap your model and lay out the serving logic.
+3. **Write the bentofile.yaml file:** Package your model and the BentoML Service into a Bento through a configuration YAML file. Each Bento corresponds to a directory that contains all the source code, dependencies, and model files required to serve the Bento, and an auto-generated Dockerfile for containerization.
+4. **Build the Docker image:** This will build the Docker image and push it.
+5. **Testing the service locally:** In this step, you test that the prediction service works locally.
 
 If you want to understand what is done at these steps, read the [BentoML quick start](https://colab.research.google.com/github/bentoml/BentoML/blob/main/examples/quickstart/iris_classifier.ipynb).
 
 In steps 6 to 9, we will deploy the serving API to VertexAI:
 
-- 6. Upload the model to Google Artifact Regitry (GAR): This will upload the Docker image of the serving API to Google Artifact Regitry.
-- 7. Import image to VertexAI model registry: Import the Docker Image as a custom model in Vertex AI model registry.
-- 8. Deploy model to VertexAI endpoint: Deploy the model from the registry to an online-prediction endpoint on VertexAI.
-- 9. Test the endpoint: Send a request to the VertexAI endpoint to test it.
+6. **Upload the model to Google Artifact Regitry (GAR):** This will upload the Docker image of the serving API to Google Artifact Regitry.
+7. **Import image to VertexAI model registry:** Import the Docker Image as a custom model in Vertex AI model registry.
+8. **Deploy model to VertexAI endpoint:** Deploy the model from the registry to an online-prediction endpoint on VertexAI.
+9. **Test the endpoint:** Send a request to the VertexAI endpoint to test it.
 
 
 ### 1. Save the model to BentoML registry
 
 Here is an example using Sklearn, but bentoml [supports many frameworks](https://docs.bentoml.com/en/latest/frameworks/index.html).
 
-```py title="bin/save_model.py" hl_lines="14"
+```py title="bin/save_model.py" hl_lines="15"
 from sklearn import svm, datasets
 import bentoml
 
@@ -140,29 +140,7 @@ You can use pydantic to validate the input and output of your API.
 This will also enrich the API Swagger documentation that is automatically generated.
 
 ```py title="service.py"
-import bentoml
-from bentoml.io import JSON
-from pydantic import BaseModel
-from typing import List
-
-# write data model in a separate file for better code readability
-class Query(BaseModel):
-    instances: List[List[float]]
-
-class Response(BaseModel):
-    predictions: List[str]
-
-# Load the BentoML bundle
-iris_clf_runner = bentoml.sklearn.get("iris_clf:latest").to_runner()
-input_schema = JSON(pydantic_model=Query)
-output_schema = JSON(pydantic_model=Response)
-
-svc = bentoml.Service("iris_classifier", runners=[iris_clf_runner])
-
-@svc.api(input=input_schema, output=output_schema)
-def classify(input_series: dict) -> dict:
-    input_series = input_series["instances"]
-    return {"predictions": iris_clf_runner.predict.run(input_series)}
+--8<-- "./docs/assets/howto_bentoml/serving_api/service.py"
 ```
 
 You can test the service locally using the following command: `bentoml serve service.py:svc --reload`
@@ -170,16 +148,7 @@ You can test the service locally using the following command: `bentoml serve ser
 ### 3. Write the bentofile.yaml file
 
 ```yaml title="bentofile.yaml"
-service: "service.py:svc"
-labels:
-  owner: bentoml-team
-  project: gallery
-include:
-  - "*.py"
-python:
-  packages:
-    - scikit-learn
-    - pandas
+--8<-- "./docs/assets/howto_bentoml/serving_api/bentofile.yaml"
 ```
 
 ### 4. Build the Docker image
@@ -205,7 +174,12 @@ Under the hood, when you do the `bentoml containerize` command, docker actually 
 If you want to use this as a VertexAI component, you cannot rely on Docker as you are already in a container. 
 The workaround here is to use Cloud Build to build the image.
 
-Check it out: [assets/howto_bentoml/workflows/build_bento.py](assets/howto_bentoml/workflows/build_bento.py)
+Check it out:
+??? note "workflows/build_bento.py"
+
+    ```python
+    --8<-- "./docs/assets/howto_bentoml/workflows/build_bento.py"
+    ```
 
 ### 5. Testing the service locally
 
@@ -247,7 +221,14 @@ So make sure you fix the errors before going further.
 docker push $IMAGE_URI`
 ```
 
-Or once again using the [Python script](docs/assets/howto_bentoml/utils/gcp.py), you can rely on Cloud Run to do this step.
+Or in Python using Cloud Run:
+
+??? note "utils/gcp.py"
+
+    ```python
+    --8<-- "./docs/assets/howto_bentoml/utils/gcp.py"
+    ```
+
 
 ### 7.Import image to VertexAI model registry
 
@@ -255,8 +236,8 @@ Now that your image is in Google Artifact Registry, you can import it to VertexA
 
 Pay attention to:
 
-* the predict route, it must be the same as your service (`/classify` in this example).
-* the port, by default BentoML uses 3000 so stick to that
+- the predict route, it must be the same as your service (`/classify` in this example).
+- the port, by default BentoML uses 3000 so stick to that
 
 Here is a bash script to do this step:
 
@@ -291,7 +272,13 @@ else
 fi
 ```
 
-And the Python Equivalent: [assets/howto_bentoml/workflows/import_model.py](assets/howto_bentoml/workflows/push_model.py)
+And the Python Equivalent:
+
+??? note "workflows/push_model.py"
+
+    ```python
+    --8<-- "./docs/assets/howto_bentoml/workflows/push_model.py"
+    ```
 
 ### 8.Deploy model to VertexAI endpoint
 
@@ -302,15 +289,15 @@ To do it programatically, check out the [Python script](docs/assets/howto_bentom
 
 Manual steps:
 
-* Go to [VertexAI model registry](https://console.cloud.google.com/vertex-ai/locations/europe-west1/models/)
-* Click on the model you want to deploy
-* Click on the burger menu at the right on the latest version, then click on "Set as Default"
-* Go to the [VertexAI endpoint page](https://console.cloud.google.com/vertex-ai/locations/europe-west1/endpoints/) and select the endpoint you want to deploy the model to
-* Select the model you want to undeploy, and click on the burger menu at the right, then click on "Undeploy model from endpoint"
-* Click on the burger menu at the right on the latest version, then click on "Deploy to Endpoint"
-* "Add to existing endpoint" and select the endpoint
-* Set traffic split to 100%, and define machine type
-* Deploy
+1. Go to [VertexAI model registry](https://console.cloud.google.com/vertex-ai/locations/europe-west1/models/)
+2. Click on the model you want to deploy
+3. Click on the burger menu at the right on the latest version, then click on "Set as Default"
+4. Go to the [VertexAI endpoint page](https://console.cloud.google.com/vertex-ai/locations/europe-west1/endpoints/) and select the endpoint you want to deploy the model to
+5. Select the model you want to undeploy, and click on the burger menu at the right, then click on "Undeploy model from endpoint"
+6. Click on the burger menu at the right on the latest version, then click on "Deploy to Endpoint"
+7. "Add to existing endpoint" and select the endpoint
+8. Set traffic split to 100%, and define machine type
+9. Deploy
 
 It takes approximatively 15 minutes. Then you get an email. If the deployment failed, you get an email (Object: "Vertex AI was unable to deploy model") with a link to the [stackdriver logs](https://console.cloud.google.com/logs/).
 To find the error in the logs, filter on severity="error".
