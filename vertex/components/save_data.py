@@ -2,7 +2,7 @@ from kfp.dsl import component, Dataset, Input
 import os
 
 # This is an example of an example of final component that saves data into a specific storage system (here a BQ table)
-@component(base_image=f'eu.gcr.io/{os.getenv("PROJECT_ID")}/vertex-pipelines-base:latest')
+@component(base_image=f'europe-west1-docker.pkg.dev/{os.getenv("PROJECT_ID")}/vertex-pipelines-docker/vertex-pipelines-base:latest')
 def save_data_component(
     df_transformed: Input[Dataset],
     project_id: str,

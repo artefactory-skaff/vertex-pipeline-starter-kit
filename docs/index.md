@@ -80,7 +80,7 @@ Example of pipeline notebook for a simple ETL (each section is a component):
 !!! example "transform_data Component"
 
     ```python3
-    @component(base_image=f'eu.gcr.io/{os.getenv("PROJECT_ID")}/vertex-pipelines-base:latest')
+    @component(base_image=f'europe-west1-docker.pkg.dev/{os.getenv("PROJECT_ID")}/vertex-pipelines-docker/vertex-pipelines-base:latest')
     def transform_data_component(
         df: Input[Dataset],
         column_name: str,

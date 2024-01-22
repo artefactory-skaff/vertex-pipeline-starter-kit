@@ -5,7 +5,7 @@ There are three ways to implement parallelization in Vertex Pipelines: single co
 Parallelizing processing in vertex pipelines by executing a component multiple times with different parameters usually works well with no additional overhead, and few surprises.
 
 ````python3
-@component(base_image=f'eu.gcr.io/{os.getenv("PROJECT_ID")}/vertex-pipelines-base:latest')
+@component(base_image=f'europe-west1-docker.pkg.dev/{os.getenv("PROJECT_ID")}/vertex-pipelines-docker/vertex-pipelines-base:latest')
 def dummy_task():
     pass
 

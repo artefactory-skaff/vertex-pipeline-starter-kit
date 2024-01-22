@@ -3,7 +3,7 @@ import os
 
 # This is a component add a constant column to pandas dataframe
 # This is an example of intermediary component that loads data from a previous component and saves data for next one.
-@component(base_image=f'eu.gcr.io/{os.getenv("PROJECT_ID")}/vertex-pipelines-base:latest')
+@component(base_image=f'europe-west1-docker.pkg.dev/{os.getenv("PROJECT_ID")}/vertex-pipelines-docker/vertex-pipelines-base:latest')
 def transform_data_component(
     df: Input[Dataset],
     column_name: str,

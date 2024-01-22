@@ -28,7 +28,7 @@ In a component file:
     from kfp.dsl import component
 
     @component(
-        base_image=f"eu.gcr.io/{os.getenv("PROJECT_ID")}/vertex-pipelines-base:latest",
+        base_image=f"europe-west1-docker.pkg.dev/{os.getenv("PROJECT_ID")}/vertex-pipelines-docker/vertex-pipelines-base:latest",
         packages_to_install=["torch==2.0.0"]  # Installs pytorch specifically for this component.
     )
     def my_component():

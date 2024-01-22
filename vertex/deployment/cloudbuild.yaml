@@ -8,7 +8,7 @@ steps:
       - '-c'
       - >-
         docker build
-        -t eu.gcr.io/$PROJECT_ID/vertex-pipelines-base:latest
+        -t europe-west1-docker.pkg.dev/$PROJECT_ID/vertex-pipelines-docker/vertex-pipelines-base:latest
         --build-arg PROJECT_ID=$PROJECT_ID
         -f vertex/deployment/Dockerfile
         .
@@ -17,4 +17,4 @@ steps:
 options:
   logging: CLOUD_LOGGING_ONLY
 images:
-  - eu.gcr.io/$PROJECT_ID/vertex-pipelines-base:latest
+  - europe-west1-docker.pkg.dev/$PROJECT_ID/vertex-pipelines-docker/vertex-pipelines-base:latest
