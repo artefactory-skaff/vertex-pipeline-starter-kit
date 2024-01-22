@@ -20,9 +20,9 @@ In most cases, just passing values to your pipeline as parameters is the simples
 import os
 
 import kfp
-from kfp.v2 import compiler
+from kfp import compiler
 import google.cloud.aiplatform as aip
-from kfp.v2.dsl import component
+from kfp.dsl import component
 
 
 @component(base_image=f'eu.gcr.io/{os.getenv("PROJECT_ID")}/vertex-pipelines-base:latest')

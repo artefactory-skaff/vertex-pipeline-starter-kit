@@ -1,4 +1,4 @@
-from kfp.v2.dsl import component, Dataset, Input
+from kfp.dsl import component, Dataset, Input
 import os
 
 # This is an example of an example of final component that saves data into a specific storage system (here a BQ table)

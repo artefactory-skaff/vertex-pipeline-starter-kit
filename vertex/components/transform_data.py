@@ -1,4 +1,4 @@
-from kfp.v2.dsl import component, Dataset, Input, Output
+from kfp.dsl import component, Dataset, Input, Output
 import os
 
 # This is a component add a constant column to pandas dataframe
