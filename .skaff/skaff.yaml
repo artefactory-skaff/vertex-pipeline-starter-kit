@@ -21,6 +21,7 @@ clouds:                # aws, gcp, azure, databricks
 
 technologies:          # python, dbt, terraform, airbyte, ...
   - vertex
+  - python
 
 expertises:            # MMM, forecasting, ELT, release engineering, ...
   - MLEng
