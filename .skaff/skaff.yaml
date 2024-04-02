@@ -1,0 +1,27 @@
+spec_version: 1
+
+# Everyting in this file will be used to populate the catalog on skaff.artefact.com
+# It is also vectorized as is for the search, so make sure to provide relevant keywords
+
+name: Starter Kit Vertex AI pipelines
+owner: alexis.vialaret@artefact.com
+description: >
+  This is a very basic repo template for people to get started building Vertex pipelines. This is not suitable for prod.
+documentation_url: null    # Fixme
+
+type: knowldege pack   # deployable, knowldege pack
+lifecycle: production  # prototype, production
+
+users:                 # DS, DA, DE
+  - DS
+  - DE
+
+clouds:                # aws, gcp, azure, databricks
+  - gcp
+
+technologies:          # python, dbt, terraform, airbyte, ...
+  - vertex
+
+expertises:            # MMM, forecasting, ELT, release engineering, ...
+  - MLEng
+  - MLOps
