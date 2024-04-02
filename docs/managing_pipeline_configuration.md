@@ -20,12 +20,12 @@ In most cases, just passing values to your pipeline as parameters is the simples
 import os
 
 import kfp
-from kfp.v2 import compiler
+from kfp import compiler
 import google.cloud.aiplatform as aip
-from kfp.v2.dsl import component
+from kfp.dsl import component
 
 
-@component(base_image=f'eu.gcr.io/{os.getenv("PROJECT_ID")}/vertex-pipelines-base:latest')
+@component(base_image=f'europe-west1-docker.pkg.dev/{os.getenv("PROJECT_ID")}/vertex-pipelines-docker/vertex-pipelines-base:latest')
 def dummy_task(project_id: str, country: str, start_date: str, end_date: str):
     pass
 

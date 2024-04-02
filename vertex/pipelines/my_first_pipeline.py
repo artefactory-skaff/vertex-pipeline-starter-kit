@@ -1,7 +1,7 @@
 import os
 
 import kfp
-from kfp.v2 import compiler
+from kfp import compiler
 import google.cloud.aiplatform as aip
 
 
