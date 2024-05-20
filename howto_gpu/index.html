@@ -1,0 +1,1070 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../howto_schedule_pipelines/">
+      
+      
+        <link rel="next" href="../howto_bentoml/">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.24">
+    
+    
+      
+        <title>How to manage GPUs - Vertex pipelines starter kit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oxygen:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Oxygen";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/skaff.css">
+    
+      <link rel="stylesheet" href="../termynal.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-7REH78BCSD"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-7REH78BCSD",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-7REH78BCSD",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-set-up-a-gpu-docker-container-that-runs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Vertex pipelines starter kit" class="md-header__button md-logo" aria-label="Vertex pipelines starter kit" data-md-component="logo">
+      
+  <img src="../images/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Vertex pipelines starter kit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How to manage GPUs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/artefactory/vertex-pipeline-starter-kit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    artefactory/vertex-pipeline-starter-kit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Vertex pipelines starter kit" class="md-nav__button md-logo" aria-label="Vertex pipelines starter kit" data-md-component="logo">
+      
+  <img src="../images/logo.svg" alt="logo">
+
+    </a>
+    Vertex pipelines starter kit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/artefactory/vertex-pipeline-starter-kit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    artefactory/vertex-pipeline-starter-kit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../base_image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker base image for pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../managing_packages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Managing python packages and dependencies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../managing_pipeline_configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Managing pipelines configurations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../parallelizing_processing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parallelizing processings in pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../splitting_components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Rules of thumb to split components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../when_to_use_premade_components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using premade components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    How-tos
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            How-tos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_CPU_RAM_resources/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to allocate more RAM and CPU in a pipeline?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_pass_complex_objects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to pass a complex object between components?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_conditional_components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to condition the execution of a component?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_act_on_failure/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to trigger an alert when my vertex pipeline fails?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_schedule_pipelines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to schedule pipelines?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    How to manage GPUs
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    How to manage GPUs
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-docker-image-with-gpu-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a Docker Image with GPU support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create a Docker Image with GPU support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-identify-the-cuda-version-of-your-local-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Identify the CUDA version of your local environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-select-a-docker-image-that-matches-your-cuda-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Select a Docker image that matches your CUDA version
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-install-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Install Python
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-install-the-pytorch-or-tensorflow-version-that-is-compatible-with-your-cuda-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Install the PyTorch or Tensorflow version that is compatible with your CUDA version
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ask-for-a-gpu-in-your-vertex-pipeline-for-your-training-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ask for a GPU in your Vertex pipeline, for your training step
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-your-pipeline-and-make-sure-the-vertex-training-component-step-access-the-gpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run your pipeline and make sure the Vertex training component step access the GPU
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_bentoml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to create an API endpoint for online serving with BentoML
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-docker-image-with-gpu-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a Docker Image with GPU support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create a Docker Image with GPU support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-identify-the-cuda-version-of-your-local-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Identify the CUDA version of your local environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-select-a-docker-image-that-matches-your-cuda-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Select a Docker image that matches your CUDA version
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-install-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Install Python
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-install-the-pytorch-or-tensorflow-version-that-is-compatible-with-your-cuda-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Install the PyTorch or Tensorflow version that is compatible with your CUDA version
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ask-for-a-gpu-in-your-vertex-pipeline-for-your-training-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ask for a GPU in your Vertex pipeline, for your training step
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-your-pipeline-and-make-sure-the-vertex-training-component-step-access-the-gpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run your pipeline and make sure the Vertex training component step access the GPU
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="how-to-set-up-a-gpu-docker-container-that-runs">How to set up a GPU Docker container that runs</h1>
+<p>While training Deep Learning algorithms, you might need GPUs to speed up the process.
+This tutorial will show you how to:</p>
+<ul>
+<li>Create a Docker Image with GPU support</li>
+<li>Set up Vertex AI to run the Docker Image on a GPU</li>
+<li>Make sure the Vertex training component step access the GPU</li>
+</ul>
+<h2 id="create-a-docker-image-with-gpu-support">Create a Docker Image with GPU support</h2>
+<p>Please refer to this excellent <a href="https://towardsdatascience.com/a-complete-guide-to-building-a-docker-image-serving-a-machine-learning-system-in-production-d8b5b0533bde#:~:text=3.%20Building%20a%20Docker%20image%20for%20any%20Python%20Project%20(GPU)%3A">tutorial</a> to create a Docker Image with GPU support.</p>
+<h3 id="1-identify-the-cuda-version-of-your-local-environment">1. Identify the CUDA version of your local environment</h3>
+<p>This take-away from the article is important:</p>
+<blockquote>
+<p>[!IMPORTANT]
+Always use the same CUDA and cuDNN version in Docker image as present in the underlying host machine</p>
+</blockquote>
+<p>So the first step is to identify which CUDA version and PyTorch version you are using in your local environment.</p>
+<p>To identify the CUDA version of your local environment, run:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>freeze<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>cu
+
+nvidia-cudnn-cu11<span class="o">==</span><span class="m">8</span>.5.0.96
+</code></pre></div>
+<p>Means I have CUDA 11 installed, and CuDNN 8.</p>
+<h3 id="2-select-a-docker-image-that-matches-your-cuda-version">2. Select a Docker image that matches your CUDA version</h3>
+<blockquote>
+<p>Docker hub of Nvidia has a lot of images, so understanding their tags and selecting the correct image is the most important building block.</p>
+</blockquote>
+<p>Prefers <code>nvidia/cuda</code> Docker images compared to <code>pytorch/</code> and  <code>vertex-ai/training</code>.</p>
+<p>You need to select a Docker image that matches this version. Check out the <a href="https://hub.docker.com/r/nvidia/cuda/tags">Docker Hub</a> to find a compatible version. In my case, I found <a href="https://hub.docker.com/layers/nvidia/cuda/11.7.1-cudnn8-runtime-ubuntu20.04/images/sha256-352a7039e533fb22d24de831d09aa3791431c2e5809c279a336fe0aeef72b7fb?context=explore">this one</a>: <code>nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04</code></p>
+<p>so I would start my dockerfile with:</p>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04</span>
+</code></pre></div>
+<h3 id="3-install-python">3. Install Python</h3>
+<p>You need to install the same Python version as the one you are using in your local environment.</p>
+<p>In my case, I am using Python 3.9, so I would add this line to my Dockerfile:</p>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04</span>
+<span class="hll"><span class="k">ENV</span><span class="w"> </span><span class="nv">PYTHON_VERSION</span><span class="o">=</span><span class="m">3</span>.9
+</span><span class="hll"><span class="k">ENV</span><span class="w"> </span><span class="nv">CONTAINER_TIMEZONE</span><span class="o">=</span>Europe/Paris
+</span><span class="hll">
+</span><span class="hll"><span class="c"># Set the timezone to prevent tzdata asking for user input</span>
+</span><span class="hll"><span class="k">RUN</span><span class="w"> </span>ln<span class="w"> </span>-snf<span class="w"> </span>/usr/share/zoneinfo/<span class="nv">$CONTAINER_TIMEZONE</span><span class="w"> </span>/etc/localtime<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$CONTAINER_TIMEZONE</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/timezone
+</span><span class="hll">
+</span><span class="hll"><span class="k">RUN</span><span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>--no-install-recommends<span class="w"> </span>-y<span class="w"> </span>build-essential<span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>tzdata<span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span>-venv<span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>python3-pip<span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>python3-setuptools<span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>python3-distutils<span class="w"> </span><span class="se">\ </span>
+</span><span class="hll"><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>clean<span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/var/lib/apt/lists/*
+</span><span class="hll">
+</span><span class="hll"><span class="k">RUN</span><span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span>-f<span class="w"> </span>/usr/bin/python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span><span class="w"> </span>/usr/bin/python3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>ln<span class="w"> </span>-s<span class="w"> </span>-f<span class="w"> </span>/usr/bin/python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span><span class="w"> </span>/usr/bin/python<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>ln<span class="w"> </span>-s<span class="w"> </span>-f<span class="w"> </span>/usr/bin/pip3<span class="w"> </span>/usr/bin/pip
+</span></code></pre></div>
+<h3 id="4-install-the-pytorch-or-tensorflow-version-that-is-compatible-with-your-cuda-version">4. Install the PyTorch or Tensorflow version that is compatible with your CUDA version</h3>
+<blockquote>
+<p>[!WARNING]
+Don’t blindly install latest tensorflow/pytorch library from PyPi. It is absolutely incorrect that any version of this both package will work with any version of CUDA, cuDNN. In fact, the combination of the latest version of both, tensorflow/pytorch with CUDA/cuDNN may not be compatible</p>
+</blockquote>
+<p>For PyTorch for example, go to the <a href="https://pytorch.org/#:~:text=Aid%20to%20Ukraine.-,INSTALL%20PYTORCH,-Select%20your%20preferences">Install Section</a> to find a compatible version. You can also browse the previous versions <a href="https://pytorch.org/get-started/previous-versions/">here</a>.</p>
+<p>You need to install a GPU version.
+In my case, I found this one: <code>torch==2.0.0+cu117</code> in the website, with the install instruction:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.0.0+cu117<span class="w"> </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu117
+</code></pre></div>
+<p>So I would add this line to my Dockerfile, with the <code>--no-cache-dir</code> option to avoid caching the wheel file, which can crash the build.</p>
+<p>Then, I also install the requirements.txt file of my project, and copy the source code.</p>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">nvidia/cuda:11.7.0-cudnn8-runtime-ubuntu20.04</span>
+
+<span class="k">ARG</span><span class="w"> </span>PROJECT_ID
+<span class="k">ENV</span><span class="w"> </span><span class="nv">PROJECT_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">PYTHON_VERSION</span><span class="o">=</span><span class="m">3</span>.9
+<span class="k">ENV</span><span class="w"> </span><span class="nv">CONTAINER_TIMEZONE</span><span class="o">=</span>Europe/Paris
+
+<span class="c"># Set the timezone to prevent tzdata asking for user input</span>
+<span class="k">RUN</span><span class="w"> </span>ln<span class="w"> </span>-snf<span class="w"> </span>/usr/share/zoneinfo/<span class="nv">$CONTAINER_TIMEZONE</span><span class="w"> </span>/etc/localtime<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$CONTAINER_TIMEZONE</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/timezone
+
+<span class="c"># export DEBIAN_FRONTEND=noninteractive \</span>
+<span class="k">RUN</span><span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>--no-install-recommends<span class="w"> </span>-y<span class="w"> </span>build-essential<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>tzdata<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span>-venv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>python3-pip<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>python3-setuptools<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>python3-distutils<span class="w"> </span><span class="se">\ </span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>clean<span class="w"> </span><span class="se">\</span>
+<span class="hll"><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/var/lib/apt/lists/*
+</span><span class="hll">
+</span><span class="hll"><span class="k">RUN</span><span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span>-f<span class="w"> </span>/usr/bin/python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span><span class="w"> </span>/usr/bin/python3<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>ln<span class="w"> </span>-s<span class="w"> </span>-f<span class="w"> </span>/usr/bin/python<span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span><span class="w"> </span>/usr/bin/python<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+</span><span class="hll"><span class="w">    </span>ln<span class="w"> </span>-s<span class="w"> </span>-f<span class="w"> </span>/usr/bin/pip3<span class="w"> </span>/usr/bin/pip
+</span><span class="hll">
+</span><span class="k">RUN</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.0.0+cu117<span class="w"> </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu117
+<span class="k">COPY</span><span class="w"> </span>requirements.txt<span class="w"> </span>.
+<span class="k">RUN</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
+</code></pre></div>
+<h2 id="ask-for-a-gpu-in-your-vertex-pipeline-for-your-training-step">Ask for a GPU in your Vertex pipeline, for your training step</h2>
+<p>In your <code>pipeline.py</code>, add <code>set_gpu_limit</code> and <code>add_node_selector_constraint</code> to your training component, then select a GPU type:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@kfp</span><span class="o">.</span><span class="n">dsl</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;training-pipeline&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">pipeline</span><span class="p">(</span>
+    <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">split_data_task</span> <span class="o">=</span> <span class="n">load_and_split_data_component</span><span class="p">(</span>
+        <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">train_model_task</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span>
+            <span class="n">train_model_component</span><span class="p">(</span>
+                <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">,</span>
+                <span class="n">train</span><span class="o">=</span><span class="n">split_data_task</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;train_dataset&quot;</span><span class="p">],</span>
+                <span class="n">val</span><span class="o">=</span><span class="n">split_data_task</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;val_dataset&quot;</span><span class="p">],</span>
+                <span class="n">test</span><span class="o">=</span><span class="n">split_data_task</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;test_dataset&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">set_gpu_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add_node_selector_constraint</span><span class="p">(</span>
+            <span class="n">label_name</span><span class="o">=</span><span class="s2">&quot;cloud.google.com/gke-accelerator&quot;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;NVIDIA_TESLA_P100&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</code></pre></div>
+<p><strong>Troubleshooting errors</strong></p>
+<ul>
+<li>Make sure the Quotas allows you to query the GPU type you want. You might have to request a quota increase.</li>
+<li>Also, you must select a GPU type that is available in the region you are using.</li>
+</ul>
+<h2 id="run-your-pipeline-and-make-sure-the-vertex-training-component-step-access-the-gpu">Run your pipeline and make sure the Vertex training component step access the GPU</h2>
+<p>In the code of my component/ workflow, I log the GPU availability with:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="k">def</span> <span class="nf">train_model_workflow</span><span class="p">(</span>
+    <span class="n">some_parameters</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GPU:</span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>This allows me to check is the GPU is available in the logs of the Vertex training component step.</p>
+<p>If the GPU is available, you will see this in the logs:</p>
+<div class="highlight"><pre><span></span><code>GPU:True
+</code></pre></div>
+<p>If the GPU is not available, it means your Docker image is not configured properly, or you did not select a GPU type in your Vertex pipeline.
+Iterate on the previous steps to fix the issue.</p>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1@">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 9v12H1V9h4m4 12a2 2 0 0 1-2-2V9c0-.55.22-1.05.59-1.41L14.17 1l1.06 1.06c.27.27.44.64.44 1.05l-.03.32L14.69 8H21a2 2 0 0 1 2 2v2c0 .26-.05.5-.14.73l-3.02 7.05C19.54 20.5 18.83 21 18 21H9m0-2h9.03L21 12v-2h-8.79l1.13-5.32L9 9.03V19Z"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 15V3h4v12h-4M15 3a2 2 0 0 1 2 2v10c0 .55-.22 1.05-.59 1.41L9.83 23l-1.06-1.06c-.27-.27-.44-.64-.44-1.06l.03-.31.95-4.57H3a2 2 0 0 1-2-2v-2c0-.26.05-.5.14-.73l3.02-7.05C4.46 3.5 5.17 3 6 3h9m0 2H5.97L3 12v2h8.78l-1.13 5.32L15 14.97V5Z"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1@" hidden>
+              
+              
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              Thanks for your feedback! Help us improve this page by  <a href="https://github.com/artefactory-skaff/skaff-repo-template/issues/new/?title=[Feedback]+How%20to%20manage%20GPUs+-+/howto_gpu/" target="_blank" rel="noopener">opening an issue</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.indexes", "navigation.path", "navigation.instant", "navigation.instant.preview", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "toc.follow"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.081f42fc.min.js"></script>
+      
+        <script src="../termynal.js"></script>
+      
+    
+  </body>
+</html>

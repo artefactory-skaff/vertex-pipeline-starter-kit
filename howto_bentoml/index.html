@@ -1,0 +1,1507 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../howto_gpu/">
+      
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.24">
+    
+    
+      
+        <title>How to create an API endpoint for online serving with BentoML - Vertex pipelines starter kit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oxygen:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Oxygen";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/skaff.css">
+    
+      <link rel="stylesheet" href="../termynal.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-7REH78BCSD"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-7REH78BCSD",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-7REH78BCSD",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-deploy-a-bentoml-bundle-to-vertexai" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Vertex pipelines starter kit" class="md-header__button md-logo" aria-label="Vertex pipelines starter kit" data-md-component="logo">
+      
+  <img src="../images/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Vertex pipelines starter kit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How to create an API endpoint for online serving with BentoML
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/artefactory/vertex-pipeline-starter-kit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    artefactory/vertex-pipeline-starter-kit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Vertex pipelines starter kit" class="md-nav__button md-logo" aria-label="Vertex pipelines starter kit" data-md-component="logo">
+      
+  <img src="../images/logo.svg" alt="logo">
+
+    </a>
+    Vertex pipelines starter kit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/artefactory/vertex-pipeline-starter-kit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    artefactory/vertex-pipeline-starter-kit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../base_image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker base image for pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../managing_packages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Managing python packages and dependencies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../managing_pipeline_configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Managing pipelines configurations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../parallelizing_processing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parallelizing processings in pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../splitting_components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Rules of thumb to split components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../when_to_use_premade_components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using premade components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    How-tos
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            How-tos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_CPU_RAM_resources/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to allocate more RAM and CPU in a pipeline?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_pass_complex_objects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to pass a complex object between components?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_conditional_components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to condition the execution of a component?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_act_on_failure/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to trigger an alert when my vertex pipeline fails?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_schedule_pipelines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to schedule pipelines?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto_gpu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to manage GPUs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    How to create an API endpoint for online serving with BentoML
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    How to create an API endpoint for online serving with BentoML
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#should-you-use-bentoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      Should you use BentoML?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key ressources
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steps
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-save-the-model-to-bentoml-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Save the model to BentoML registry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-the-api-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create the API service
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-write-the-bentofileyaml-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Write the bentofile.yaml file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-build-the-docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Build the Docker image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-testing-the-service-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Testing the service locally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-upload-the-model-to-google-artifact-regitry-gar" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Upload the model to Google Artifact Regitry (GAR)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7import-image-to-vertexai-model-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.Import image to VertexAI model registry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8deploy-model-to-vertexai-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.Deploy model to VertexAI endpoint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9test-the-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.Test the endpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#should-you-use-bentoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      Should you use BentoML?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key ressources
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steps
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-save-the-model-to-bentoml-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Save the model to BentoML registry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-the-api-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create the API service
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-write-the-bentofileyaml-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Write the bentofile.yaml file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-build-the-docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Build the Docker image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-testing-the-service-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Testing the service locally
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-upload-the-model-to-google-artifact-regitry-gar" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Upload the model to Google Artifact Regitry (GAR)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7import-image-to-vertexai-model-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.Import image to VertexAI model registry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8deploy-model-to-vertexai-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.Deploy model to VertexAI endpoint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9test-the-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.Test the endpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="how-to-deploy-a-bentoml-bundle-to-vertexai">How to deploy a BentoML bundle to VertexAI</h1>
+<p><a href="https://github.com/bentoml/BentoML">BentoML</a> is a library that allows you to build the online serving API to serve your model.
+The purpose of this tutorial is to show you how to deploy a BentoML bundle to a VertexAI Endpoint.</p>
+<p>Along with this tutorial, an example is provided, with some useful function to perform this process in a VertexAI pipeline.
+<a href="https://github.com/artefactory/vertex-pipeline-starter-kit/tree/doc/hv-add-bentoml-howto/docs/assets/howto_bentoml">Check it out on Github</a></p>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li><a href="#how-to-deploy-a-bentoml-bundle-to-vertexai">How to deploy a BentoML bundle to VertexAI</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#should-you-use-bentoml">Should you use BentoML?</a></li>
+<li><a href="#key-ressources">Key ressources</a></li>
+<li><a href="#steps">Steps</a><ul>
+<li><a href="#1-save-the-model-to-bentoml-registry">1. Save the model to BentoML registry</a></li>
+<li><a href="#2-create-the-api-service">2. Create the API service</a></li>
+<li><a href="#3-write-the-bentofileyaml-file">3. Write the bentofile.yaml file</a></li>
+<li><a href="#4-build-the-docker-image">4. Build the Docker image</a></li>
+<li><a href="#5-testing-the-service-locally">5. Testing the service locally</a></li>
+<li><a href="#6-upload-the-model-to-google-artifact-regitry-gar">6. Upload the model to Google Artifact Regitry (GAR)</a></li>
+<li><a href="#7import-image-to-vertexai-model-registry">7.Import image to VertexAI model registry</a></li>
+<li><a href="#8deploy-model-to-vertexai-endpoint">8.Deploy model to VertexAI endpoint</a></li>
+<li><a href="#9test-the-endpoint">9.Test the endpoint</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="should-you-use-bentoml">Should you use BentoML?</h2>
+<p>When not using the build-in algorithms, model deployment on VertexAI requires users to build their own container image and API server.
+BentoML is a library that allows you to turn your ML model into production API endpoint with just a few lines of code.
+It will handle the creation of the serving API and the Docker image. It can be an alternative to <a href="https://www.tensorflow.org/tfx/guide/serving">Tensorflow Serving</a> or <a href="https://github.com/pytorch/serve/tree/master/examples">TorchServe</a>.</p>
+<div class="admonition quote">
+<p class="admonition-title">Quote</p>
+<p>Shipping ML models to production is broken. Data Scientists may not have all the expertise in building production services and the trained models they delivered are very hard to test and deploy. This often leads to a time consuming and error-prone workflow, where a pickled model or weights file is handed over to a software engineering team.
+BentoML is an end-to-end solution for model serving, making it possible for Data Science teams to ship their models as prediction services, in a way that is easy to test, easy to deploy, and easy to integrate with other DevOps tools.</p>
+</div>
+<p>Please read these ressources to go further:</p>
+<ul>
+<li><a href="https://www.reddit.com/r/MachineLearning/comments/g1cfre/p_bentoml_an_opensource_platform_for/">Reddit thread</a></li>
+<li><a href="https://docs.bentoml.com/en/latest/overview/what-is-bentoml.html#why-bentoml">Official documentation</a></li>
+</ul>
+<h2 id="key-ressources">Key ressources</h2>
+<p>This tutorial assume you already know the basics of BentoML.
+Please read these ressources first:</p>
+<ul>
+<li><a href="https://colab.research.google.com/github/bentoml/BentoML/blob/main/examples/quickstart/iris_classifier.ipynb">Quickstart BentoML Latest version &gt;1.0</a></li>
+<li><a href="https://colab.research.google.com/github/bentoml/BentoML/blob/0.13-LTS/guides/quick-start/bentoml-quick-start-guide.ipynb">Quicktart &lt;0.3 LTS</a></li>
+<li><a href="https://web.archive.org/web/20220818073753/https://docs.bentoml.org/en/0.13-lts/deployment/google_cloud_ai_platform.html">Deploying on VertexAI Workbench &lt;0.3 LTS</a></li>
+<li><a href="https://cloud.google.com/blog/topics/developers-practitioners/pytorch-google-cloud-how-deploy-pytorch-models-vertex-ai">GCP - How to deploy PyTorch models on Vertex AI using TorchServe</a></li>
+</ul>
+<h2 id="steps">Steps</h2>
+<p>Here are the steps to deploy a BentoML bundle to VertexAI:</p>
+<ol>
+<li>Save the model to BentoML registry</li>
+<li>Create the API service</li>
+<li>Write the bentofile.yaml file</li>
+<li>Build the Docker image</li>
+<li>Testing the service locally</li>
+<li>Upload the model to Google Artifact Regitry (GAR)</li>
+<li>Import image to VertexAI model registry</li>
+<li>Deploy model to VertexAI endpoint</li>
+<li>Test the endpoint</li>
+</ol>
+<p>Steps 1 to 5 are pure BentoML development steps. Here is a high-level overview of what they do:</p>
+<ol>
+<li><strong>Save the model to BentoML registry:</strong> In this step, you save the trained model from your ML framework (scikit, pytorch) to a BentoML model registry.</li>
+<li><strong>Create the API service:</strong> Create a <code>service.py</code> file to wrap your model and lay out the serving logic.</li>
+<li><strong>Write the bentofile.yaml file:</strong> Package your model and the BentoML Service into a Bento through a configuration YAML file. Each Bento corresponds to a directory that contains all the source code, dependencies, and model files required to serve the Bento, and an auto-generated Dockerfile for containerization.</li>
+<li><strong>Build the Docker image:</strong> This will build the Docker image and push it.</li>
+<li><strong>Testing the service locally:</strong> In this step, you test that the prediction service works locally.</li>
+</ol>
+<p>If you want to understand what is done at these steps, read the <a href="https://colab.research.google.com/github/bentoml/BentoML/blob/main/examples/quickstart/iris_classifier.ipynb">BentoML quick start</a>.</p>
+<p>In steps 6 to 9, we will deploy the serving API to VertexAI:</p>
+<ol>
+<li><strong>Upload the model to Google Artifact Regitry (GAR):</strong> This will upload the Docker image of the serving API to Google Artifact Regitry.</li>
+<li><strong>Import image to VertexAI model registry:</strong> Import the Docker Image as a custom model in Vertex AI model registry.</li>
+<li><strong>Deploy model to VertexAI endpoint:</strong> Deploy the model from the registry to an online-prediction endpoint on VertexAI.</li>
+<li><strong>Test the endpoint:</strong> Send a request to the VertexAI endpoint to test it.</li>
+</ol>
+<h3 id="1-save-the-model-to-bentoml-registry">1. Save the model to BentoML registry</h3>
+<p>Here is an example using Sklearn, but bentoml <a href="https://docs.bentoml.com/en/latest/frameworks/index.html">supports many frameworks</a>.</p>
+<div class="highlight"><span class="filename">bin/save_model.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">svm</span><span class="p">,</span> <span class="n">datasets</span>
+<span class="kn">import</span> <span class="nn">bentoml</span>
+
+<span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s2">&quot;iris_clf&quot;</span>
+
+<span class="c1"># Load training data</span>
+<span class="n">iris</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">()</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span>
+
+<span class="c1"># Model Training</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">()</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Save the model to BentoML format</span>
+<span class="hll"><span class="n">saved_model</span> <span class="o">=</span> <span class="n">bentoml</span><span class="o">.</span><span class="n">sklearn</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">clf</span><span class="p">)</span>
+</span><span class="nb">print</span><span class="p">(</span><span class="n">saved_model</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+</code></pre></div>
+<p>Once the model is saved, you can access it thought the CLI command: <code>bentoml models get iris_clf:latest</code></p>
+<h3 id="2-create-the-api-service">2. Create the API service</h3>
+<p>One specificity here is that VertexAI endpoints only accept JSON input and output, formated in a specific way.
+Inputs must be formated as a JSON object with a key "instances" containing a list of lists of values.
+Outputs must be formated as a JSON object with a key "predictions" containing a list of values.</p>
+<p>Example of input:</p>
+<div class="highlight"><span class="filename">query.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="mf">5.1</span><span class="p">,</span><span class="w"> </span><span class="mf">3.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="mf">4.9</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">]</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Example of response:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;predictions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;setosa&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;setosa&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>So we need to write a service that will take the input, format it to a list of lists, and then call the BentoML bundle.
+Then, we need to format the output to the VertexAI format.</p>
+<p>You can use pydantic to validate the input and output of your API.
+This will also enrich the API Swagger documentation that is automatically generated.</p>
+<div class="highlight"><span class="filename">service.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">bentoml</span>
+<span class="kn">from</span> <span class="nn">bentoml.io</span> <span class="kn">import</span> <span class="n">JSON</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="c1"># write data model in a separate file for better code readability</span>
+<span class="k">class</span> <span class="nc">Query</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">instances</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+
+<span class="k">class</span> <span class="nc">Response</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">predictions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
+<span class="c1"># Load the BentoML bundle</span>
+<span class="n">iris_clf_runner</span> <span class="o">=</span> <span class="n">bentoml</span><span class="o">.</span><span class="n">sklearn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;iris_clf:latest&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_runner</span><span class="p">()</span>
+<span class="n">input_schema</span> <span class="o">=</span> <span class="n">JSON</span><span class="p">(</span><span class="n">pydantic_model</span><span class="o">=</span><span class="n">Query</span><span class="p">)</span>
+<span class="n">output_schema</span> <span class="o">=</span> <span class="n">JSON</span><span class="p">(</span><span class="n">pydantic_model</span><span class="o">=</span><span class="n">Response</span><span class="p">)</span>
+
+<span class="n">svc</span> <span class="o">=</span> <span class="n">bentoml</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s2">&quot;iris_classifier&quot;</span><span class="p">,</span> <span class="n">runners</span><span class="o">=</span><span class="p">[</span><span class="n">iris_clf_runner</span><span class="p">])</span>
+
+<span class="nd">@svc</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">input_schema</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output_schema</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="n">input_series</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">input_series</span> <span class="o">=</span> <span class="n">input_series</span><span class="p">[</span><span class="s2">&quot;instances&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;predictions&quot;</span><span class="p">:</span> <span class="n">iris_clf_runner</span><span class="o">.</span><span class="n">predict</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_series</span><span class="p">)}</span>
+</code></pre></div>
+<p>You can test the service locally using the following command: <code>bentoml serve service.py:svc --reload</code></p>
+<h3 id="3-write-the-bentofileyaml-file">3. Write the bentofile.yaml file</h3>
+<div class="highlight"><span class="filename">bentofile.yaml</span><pre><span></span><code><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;service.py:svc&quot;</span>
+<span class="nt">labels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bentoml-team</span>
+<span class="w">  </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gallery</span>
+<span class="nt">include</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*.py&quot;</span>
+<span class="nt">python</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">packages</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scikit-learn</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pandas</span>
+</code></pre></div>
+<h3 id="4-build-the-docker-image">4. Build the Docker image</h3>
+<p>Here are the steps to build the Docker image and run it locally:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&quot;0.0.1&quot;</span>
+<span class="nv">GCP_PROJECT</span><span class="o">=</span><span class="s2">&quot;my-gcp-project&quot;</span>
+<span class="nv">SERVICE</span><span class="o">=</span><span class="s2">&quot;iris_classifier&quot;</span>
+<span class="nv">YAML_PATH</span><span class="o">=</span><span class="s2">&quot;bentofile.yaml&quot;</span>
+<span class="nv">IMAGE_URI</span><span class="o">=</span>eu.gcr.io/<span class="nv">$GCP_PROJECT</span>/<span class="nv">$SERVICE</span>:<span class="nv">$VERSION</span>
+
+bentoml<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span><span class="nv">$YAML_PATH</span><span class="w"> </span>./src/<span class="w"> </span>--version<span class="w"> </span><span class="nv">$VERSION</span>
+bentoml<span class="w"> </span>serve<span class="w"> </span><span class="nv">$SERVICE</span>:latest<span class="w"> </span>--production
+bentoml<span class="w"> </span>containerize<span class="w"> </span><span class="nv">$SERVICE</span>:<span class="nv">$VERSION</span><span class="w"> </span>-t<span class="w"> </span><span class="nv">$IMAGE_URI</span>
+</code></pre></div>
+<p>However, it's not handy to use the CLI if you want to do this step in a Python Script, and there is a lack of documentation on that.
+So I wrote a <a href="../assets/howto_bentoml/workflows/build_bento.py">Python script</a> to do this step, that can be used in a VertexAI component.</p>
+<p>Under the hood, when you do the <code>bentoml containerize</code> command, docker actually builds the image.
+If you want to use this as a VertexAI component, you cannot rely on Docker as you are already in a container. 
+The workaround here is to use Cloud Build to build the image.</p>
+<p>Check it out:
+??? note "workflows/build_bento.py"</p>
+<pre><code>```python
+from loguru import logger
+import bentoml
+from utils.bentoml import delete_bento_models_if_exists, save_model_to_bento, delete_bento_service_if_exists
+from utils.gcp import build_docker_image_with_cloud_build, upload_file_to_gcs
+
+
+PROJECT_ID = 'gcp_project_id'
+
+
+def save_model_workflow(model_path: str, model_name: str) -&gt; str:
+    """This function is used to save the model to BentoML and push it to GCR
+
+    It's an equivalent to these commands:
+    ```bash
+    bentoml build -f "$YAML_PATH" ./ --version $VERSION
+    bentoml containerize $SERVICE:$VERSION -t "$IMAGE_URI"
+    docker push "$IMAGE_URI"
+    ```
+
+    Args:
+        model_path (str): the path to the model artifact (eg. pickle).
+            Eg. "gs://bucket-name/model_dirpath/"
+        model_name (str): The name of the model. Eg. "iris_classifier"
+
+    Returns:
+        str: the URI of the pushed image
+            eg. "gcr.io/project-id/iris-classifier:latest"
+    """
+    bento_filepath = "path/to/bento/file/bento.yaml"
+    service_name = f"{model_name}_svc"
+    delete_bento_models_if_exists(model_name)
+    save_model_to_bento(model_path, model_name)
+    logger.info(f"Model saved: {bentoml.models.list()}")
+    delete_bento_service_if_exists(service_name)
+
+    logger.info(f"Building Bento service {service_name} from {bento_filepath}")
+    bento_build = bentoml.bentos.build_bentofile(
+        bento_filepath,
+        build_ctx=".",
+        version="latest",
+    )
+    logger.info(f"Bento Service saved: {bentoml.bentos.list()}")
+    service_name_tagged = f"{bento_build.tag.name}:{bento_build.tag.version}"
+    export_filename = f"{service_name_tagged.replace(':', '_')}.zip"
+    # `local_export_path` is the local file path where the Bento service is exported as a
+    # zip file. It is the output path where the exported Bento service is saved on the
+    # local machine before being uploaded to Google Cloud Storage (GCS).
+    local_export_path = bentoml.bentos.export_bento(
+        tag=service_name_tagged, path=f"outputs/{export_filename}", output_format="zip"
+    )
+    logger.info(f"Bento exported to {local_export_path}")
+    export_gcs_uri = f"{model_path}/{export_filename}"
+    logger.info(f"Uploading Bento to GCS to {export_gcs_uri}")
+    upload_file_to_gcs(target_path=export_gcs_uri, local_path=local_export_path)
+    docker_image_uri = f"europe-docker.pkg.dev/{PROJECT_ID}/eu.gcr.io/{service_name_tagged}"
+    # Build Dockerfile of the Bento with cloud build, as an alternative to bentoml.container.build()
+    # which is not working with Vertex AI.
+    # the image is also pushed to the container registry (GAR)
+    build_docker_image_with_cloud_build(
+        export_gcs_uri,
+        docker_image_uri,
+        project_id=PROJECT_ID,
+        dockerfile_path="env/docker/Dockerfile",  # Path to the Dockerfile in the Bento archive
+    )
+    logger.success(f"Pushed docker image {docker_image_uri}")
+    return docker_image_uri
+
+
+if __name__ == "__main__":
+    MODEL_PATH = 'path_to_model_artifact.pkl'
+    MODEL_NAME = 'iris_classifier'
+
+    docker_image_uri = save_model_workflow(
+        model_path=MODEL_PATH,
+        model_name=MODEL_NAME,
+    )
+```
+</code></pre>
+<h3 id="5-testing-the-service-locally">5. Testing the service locally</h3>
+<p>On a terminal, launch the prediction service:</p>
+<div class="highlight"><pre><span></span><code>bentoml<span class="w"> </span>serve<span class="w"> </span><span class="nv">$SERVICE</span>:<span class="nv">$VERSION</span>
+</code></pre></div>
+<p>Then, do a query:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;query.json&quot;</span><span class="p">))</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://0.0.0.0:3000/classify&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>Also, try to run the container:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>-p<span class="w"> </span><span class="m">3000</span>:3000<span class="w"> </span>eu.gcr.io/<span class="nv">$GCP_PROJECT_ID</span>/<span class="nv">$SERVICE</span>:<span class="nv">$VERSION</span><span class="w"> </span>serve<span class="w"> </span>--production
+</code></pre></div>
+<p>Then do the query again.</p>
+<p>If it doesn't work at this step, it won't work on VertexAI either.
+So make sure you fix the errors before going further.</p>
+<h3 id="6-upload-the-model-to-google-artifact-regitry-gar">6. Upload the model to Google Artifact Regitry (GAR)</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>push<span class="w"> </span><span class="nv">$IMAGE_URI</span><span class="sb">`</span>
+</code></pre></div>
+<p>Or in Python using Cloud Run:</p>
+<p>??? note "utils/gcp.py"</p>
+<pre><code>```python
+from google.cloud import storage
+from google.cloud.devtools import cloudbuild_v1
+from loguru import logger
+
+
+def build_docker_image_with_cloud_build(
+    source_code_uri: str,
+    docker_image_uri: str,
+    project_id: str,
+    dockerfile_path: str = "./Dockerfile",
+):
+    """This function build and push a docker image to GCR / Artifact registry using Cloud Build.
+    It's the equivalent of the CLI command: gcloud builds submit --tag $DOCKER_IMAGE_URI --file $DOCKERFILE_PATH $SOURCE_CODE_URI
+
+    Args:
+        source_code_uri (str): The archive containing the source code to build the docker image.
+            eg. gs://bucket-name/path/to/archive.tar.gz
+        docker_image_uri (str): The URI of the docker image to build. (--tag in docker build)
+            eg. europe-docker.pkg.dev/project-id/eu.gcr.io/image-name:tag
+        project_id (str): The project id where the Cloud Build job will run.
+        dockerfile_path (str): The path to the dockerfile to use to build the docker image. (--file in docker build)
+            eg. "env/docker/Dockerfile"
+    """
+    logger.info(f"Building docker image {docker_image_uri} using cloud build")
+    # parsing the source code uri to get the bucket name and blob name
+    bucket_name, blob_name = (
+        storage.Blob.from_string(source_code_uri).bucket.name,
+        storage.Blob.from_string(source_code_uri).name,
+    )
+    client = cloudbuild_v1.CloudBuildClient()
+    storage_source = cloudbuild_v1.StorageSource(bucket=str(bucket_name), object=str(blob_name))
+    source = cloudbuild_v1.Source(storage_source=storage_source)
+    build = cloudbuild_v1.Build(
+        source=source,
+        steps=[
+            {
+                "name": "gcr.io/cloud-builders/docker",
+                "args": [
+                    "build",
+                    "-t",
+                    docker_image_uri,
+                    "-f",
+                    dockerfile_path,  # position of the Dockerfile in the Bento directory
+                    ".",
+                ],
+            }
+        ],
+        images=[docker_image_uri],
+    )
+    request = cloudbuild_v1.CreateBuildRequest(project_id=project_id, build=build)
+    operation = client.create_build(request=request)
+    response = operation.result()
+    logger.info(f"Build response: {response}")
+
+
+def upload_file_to_gcs(target_path: str, local_path: str) -&gt; None:
+    storage_client = storage.Client()
+
+    bucket_name, blob_name = (
+        storage.Blob.from_string(target_path).bucket.name,
+        storage.Blob.from_string(target_path).name,
+    )
+
+    bucket = storage_client.bucket(bucket_name)
+    logger.debug(f"Saving File to {target_path}")
+    blob = bucket.blob(blob_name)
+    blob.upload_from_filename(local_path)
+```
+</code></pre>
+<h3 id="7import-image-to-vertexai-model-registry">7.Import image to VertexAI model registry</h3>
+<p>Now that your image is in Google Artifact Registry, you can import it to VertexAI model registry.</p>
+<p>Pay attention to:</p>
+<ul>
+<li>the predict route, it must be the same as your service (<code>/classify</code> in this example).</li>
+<li>the port, by default BentoML uses 3000 so stick to that</li>
+</ul>
+<p>Here is a bash script to do this step:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">PREDICT_ROUTE</span><span class="o">=</span><span class="s2">&quot;/classify&quot;</span>
+<span class="nv">HEALTH_ROUTE</span><span class="o">=</span><span class="s2">&quot;/healthz&quot;</span>
+<span class="nv">PORTS</span><span class="o">=</span><span class="m">3000</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Import as VertexAI model&quot;</span>
+<span class="nv">MODEL_ID</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>gcloud<span class="w"> </span>ai<span class="w"> </span>models<span class="w"> </span>list<span class="w"> </span>--region<span class="w"> </span><span class="nv">$LOCATION</span><span class="w"> </span>--filter<span class="o">=</span><span class="s2">&quot;DISPLAY_NAME: </span><span class="si">${</span><span class="nv">MODEL_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--format<span class="o">=</span><span class="s2">&quot;value(MODEL_ID)&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_ID</span><span class="p">:=</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;No existing model found for </span><span class="si">${</span><span class="nv">MODEL_NAME</span><span class="si">}</span><span class="s2">. Importing model.&quot;</span>
+<span class="w">  </span>gcloud<span class="w"> </span>ai<span class="w"> </span>models<span class="w"> </span>upload<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--region<span class="o">=</span><span class="nv">$LOCATION</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--display-name<span class="o">=</span><span class="nv">$MODEL_NAME</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-image-uri<span class="o">=</span><span class="nv">$IMAGE_URI</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-ports<span class="o">=</span><span class="nv">$PORTS</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-health-route<span class="o">=</span><span class="nv">$HEALTH_ROUTE</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-predict-route<span class="o">=</span><span class="nv">$PREDICT_ROUTE</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--project<span class="o">=</span><span class="nv">$GCP_PROJECT</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Existing model found for </span><span class="si">${</span><span class="nv">MODEL_NAME</span><span class="si">}</span><span class="s2"> (</span><span class="si">${</span><span class="nv">MODEL_ID</span><span class="si">}</span><span class="s2">). Importing new version&quot;</span>
+<span class="w">  </span>gcloud<span class="w"> </span>ai<span class="w"> </span>models<span class="w"> </span>upload<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--region<span class="o">=</span><span class="nv">$LOCATION</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--display-name<span class="o">=</span><span class="nv">$MODEL_NAME</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-image-uri<span class="o">=</span><span class="nv">$IMAGE_URI</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--project<span class="o">=</span><span class="nv">$GCP_PROJECT</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-ports<span class="o">=</span><span class="nv">$PORTS</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-health-route<span class="o">=</span><span class="nv">$HEALTH_ROUTE</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--container-predict-route<span class="o">=</span><span class="nv">$PREDICT_ROUTE</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--parent-model<span class="o">=</span>projects/<span class="si">${</span><span class="nv">GCP_PROJECT</span><span class="si">}</span>/locations/<span class="si">${</span><span class="nv">LOCATION</span><span class="si">}</span>/models/<span class="si">${</span><span class="nv">MODEL_ID</span><span class="si">}</span>
+<span class="k">fi</span>
+</code></pre></div>
+<p>And the Python Equivalent:</p>
+<p>??? note "workflows/push_model.py"</p>
+<pre><code>```python
+import os
+from utils.vertexai import get_model_if_exists, upload_model_to_registry
+
+IMAGE_TAG = os.getenv("IMAGE_TAG", "latest")
+PREDICT_ROUTE = "/classify"
+HEALTH_ROUTE = "/healthz"
+PORTS = 3000
+
+
+def push_model_workflow(
+    model_name: str,
+    serving_container_image_uri: str,
+) -&gt; str:
+    """This workflow pushes model from a Google Artifact Registry to Vertex AI Model registry.
+    If the model already exists, it will be updated.
+
+    Args:
+        model_name (str): Name of the display model in Google Registry.
+        serving_container_image_uri (str): URI of the image in Google Artifact Registry.
+            Eg. "eu.gcr.io/gcp-project-id/iris_classifier_svc:latest"
+    """
+    model = get_model_if_exists(model_name)
+    model = upload_model_to_registry(
+        model_name,
+        serving_container_image_uri,
+        parent_model=model.resource_name,
+        serving_container_predict_route=PREDICT_ROUTE,
+        serving_container_health_route=HEALTH_ROUTE,
+        serving_container_ports=[PORTS],
+        description="Product classification model, deployed automatically with Vertex AI",
+        labels={"image_tag": os.getenv("IMAGE_TAG", "latest")},
+        is_default_version=False,    # it safer to perform evaluation and make sure the model is good before setting the model as default
+    )
+    return model.display_name
+
+
+if __name__ == "__main__":
+    MODEL_NAME = "iris_classifier"
+    PROJECT_ID = "gcp_project_id"
+    SERVICE_NAME = f"{MODEL_NAME}_svc"
+    SERVING_CONTAINER_IMAGE_URI = (
+        f"europe-docker.pkg.dev/{PROJECT_ID}/eu.gcr.io/{SERVICE_NAME}:{IMAGE_TAG}"
+    )
+    push_model_workflow(MODEL_NAME, SERVING_CONTAINER_IMAGE_URI)
+```
+</code></pre>
+<h3 id="8deploy-model-to-vertexai-endpoint">8.Deploy model to VertexAI endpoint</h3>
+<p>The final step is to deploy the model to a VertexAI "online prediction" endpoint.</p>
+<p>To do it manually, follow the following step.
+To do it programatically, check out the <a href="docs/assets/howto_bentoml/workflows/deploy_model.py">Python script</a>.</p>
+<p>Manual steps:</p>
+<ol>
+<li>Go to <a href="https://console.cloud.google.com/vertex-ai/locations/europe-west1/models/">VertexAI model registry</a></li>
+<li>Click on the model you want to deploy</li>
+<li>Click on the burger menu at the right on the latest version, then click on "Set as Default"</li>
+<li>Go to the <a href="https://console.cloud.google.com/vertex-ai/locations/europe-west1/endpoints/">VertexAI endpoint page</a> and select the endpoint you want to deploy the model to</li>
+<li>Select the model you want to undeploy, and click on the burger menu at the right, then click on "Undeploy model from endpoint"</li>
+<li>Click on the burger menu at the right on the latest version, then click on "Deploy to Endpoint"</li>
+<li>"Add to existing endpoint" and select the endpoint</li>
+<li>Set traffic split to 100%, and define machine type</li>
+<li>Deploy</li>
+</ol>
+<p>It takes approximatively 15 minutes. Then you get an email. If the deployment failed, you get an email (Object: "Vertex AI was unable to deploy model") with a link to the <a href="https://console.cloud.google.com/logs/">stackdriver logs</a>.
+To find the error in the logs, filter on severity="error".</p>
+<p>You will have to fix the error, then go thought the whole process again.</p>
+<p>To know more, check out the <a href="https://cloud.google.com/vertex-ai/docs/predictions/use-custom-container#examples">official documentation</a>.</p>
+<h3 id="9test-the-endpoint">9.Test the endpoint</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get the endpoint ID from the endpoint name</span>
+<span class="nv">ENDPOINT_NAME</span><span class="o">=</span><span class="s2">&quot;iris_classifier_endpoint&quot;</span>
+<span class="nv">ENDPOINT_ID</span><span class="o">=</span><span class="k">$(</span>gcloud<span class="w"> </span>ai<span class="w"> </span>endpoints<span class="w"> </span>list<span class="w"> </span>--filter<span class="w"> </span><span class="nv">DISPLAY_NAME</span><span class="o">=</span><span class="nv">$ENDPOINT_NAME</span><span class="w"> </span>--region<span class="o">=</span><span class="nv">$LOCATION</span><span class="w"> </span>--format<span class="o">=</span><span class="s2">&quot;value(ENDPOINT_ID)&quot;</span><span class="k">)</span>
+
+<span class="c1"># OR uncomment the following line to set the endpoint ID manually:</span>
+<span class="c1"># ENDPOINT_ID=&quot;123456789&quot;</span>
+
+<span class="nv">INPUT_DATA_FILE</span><span class="o">=</span><span class="s2">&quot;query.json&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Sendind a request to the endpoint </span><span class="si">${</span><span class="nv">ENDPOINT_NAME</span><span class="si">}</span><span class="s2"> with ID: </span><span class="si">${</span><span class="nv">ENDPOINT_ID</span><span class="si">}</span><span class="s2">&quot;</span>
+
+curl<span class="w"> </span><span class="se">\</span>
+-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="k">$(</span>gcloud<span class="w"> </span>auth<span class="w"> </span>print-access-token<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+https://<span class="si">${</span><span class="nv">LOCATION</span><span class="si">}</span>-aiplatform.googleapis.com/v1/projects/<span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span>/locations/<span class="si">${</span><span class="nv">LOCATION</span><span class="si">}</span>/endpoints/<span class="si">${</span><span class="nv">ENDPOINT_ID</span><span class="si">}</span>:predict<span class="w"> </span><span class="se">\</span>
+-d<span class="w"> </span><span class="s2">&quot;@</span><span class="si">${</span><span class="nv">INPUT_DATA_FILE</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1@">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 9v12H1V9h4m4 12a2 2 0 0 1-2-2V9c0-.55.22-1.05.59-1.41L14.17 1l1.06 1.06c.27.27.44.64.44 1.05l-.03.32L14.69 8H21a2 2 0 0 1 2 2v2c0 .26-.05.5-.14.73l-3.02 7.05C19.54 20.5 18.83 21 18 21H9m0-2h9.03L21 12v-2h-8.79l1.13-5.32L9 9.03V19Z"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 15V3h4v12h-4M15 3a2 2 0 0 1 2 2v10c0 .55-.22 1.05-.59 1.41L9.83 23l-1.06-1.06c-.27-.27-.44-.64-.44-1.06l.03-.31.95-4.57H3a2 2 0 0 1-2-2v-2c0-.26.05-.5.14-.73l3.02-7.05C4.46 3.5 5.17 3 6 3h9m0 2H5.97L3 12v2h8.78l-1.13 5.32L15 14.97V5Z"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1@" hidden>
+              
+              
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              Thanks for your feedback! Help us improve this page by  <a href="https://github.com/artefactory-skaff/skaff-repo-template/issues/new/?title=[Feedback]+How%20to%20create%20an%20API%20endpoint%20for%20online%20serving%20with%20BentoML+-+/howto_bentoml/" target="_blank" rel="noopener">opening an issue</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.indexes", "navigation.path", "navigation.instant", "navigation.instant.preview", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "toc.follow"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.081f42fc.min.js"></script>
+      
+        <script src="../termynal.js"></script>
+      
+    
+  </body>
+</html>
