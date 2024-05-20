@@ -22,7 +22,6 @@ theme:
     - navigation.instant.preview
     - navigation.instant.prefetch
     - navigation.instant.progress
-    - navigation.sections
     - navigation.tracking
     - toc.follow
   palette:  # Light and dark mode
