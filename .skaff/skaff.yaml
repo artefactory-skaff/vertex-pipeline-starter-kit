@@ -7,7 +7,7 @@ name: Starter Kit Vertex AI pipelines
 owner: alexis.vialaret@artefact.com
 description: >
   This is a very basic repo template for people to get started building Vertex pipelines. This is not suitable for prod.
-documentation_url: null    # Fixme
+documentation_url: https://artefactory-skaff.github.io/vertex-pipeline-starter-kit/    # Fixme
 
 type: knowldege pack   # deployable, knowldege pack
 lifecycle: production  # prototype, production
