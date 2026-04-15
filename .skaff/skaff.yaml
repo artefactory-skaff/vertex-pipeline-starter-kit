@@ -9,7 +9,7 @@ description: >
   This is a very basic repo template for people to get started building Vertex pipelines. This is not suitable for prod.
 documentation_url: https://artefactory-skaff.github.io/vertex-pipeline-starter-kit/    # Fixme
 
-type: knowldege pack   # deployable, knowldege pack
+type: starter kit   # deployable, starter kit
 lifecycle: production  # prototype, production
 
 users:                 # DS, DA, DE
